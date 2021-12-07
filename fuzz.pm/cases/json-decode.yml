@@ -1,0 +1,11 @@
+test:
+    seeds:
+        - seeds/json_interoparibility.txt
+    libs:
+        - Json_On
+        - Json
+        - Mojo_Json
+        - Json_Parse
+        - Json_On
+    method:
+        - 
