@@ -2,11 +2,11 @@ test:
     seeds:
         - seeds/urls-radamsa.txt
     libs:
-        - Simple_URI
         - Mojo_URI
         - Tiny_HTTP
         - Mojo_UA
         - Mechanize
         - Lib_Furl
+        - Simple_URI
     method:
         -

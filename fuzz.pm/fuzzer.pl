@@ -25,29 +25,29 @@ sub main {
                     my @result = ();
                     
                     foreach my $lib_dump (@libs) {
-                        for my $lib (@$lib_dump) { 
+                        for my $lib (@$lib_dump) {
                             require "./libs/" . lc $lib . ".pm";
-                        
-                                my $fuzz = $lib -> new($_);
+                    
+                            my $fuzz = $lib -> new($_);
                                 
-                                if ($fuzz) {
-                                    push @result, $fuzz;
+                            if ($fuzz) {
+                                push @result, $fuzz;
 
-                                    if (any {$_ ne $fuzz} @result) {
-                                        print "[+] $lib \t $fuzz\n";  
-                                    }                
-                                }
+                                if (any {$_ ne $fuzz} @result) {
+                                    print "[+] $lib \t $fuzz\n";  
+                                }                
                             }
                         }
+                    }
 
                     print "\n\n";
                 }
-
+                
                 close ($file);
             }
         }
     }
-    
+
     return 0;
 }
 
