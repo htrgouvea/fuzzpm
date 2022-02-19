@@ -12,13 +12,17 @@
 
 ### Summary
 
-I’m an Independent Researcher based in São Paulo with Software Development background and 5 years of experience in the offensive security industry. My research focus is vulnerability discovery in applications/services. I have fun bypassing modern defenses, exploring systems and playing with new technologies and in parallel: sharing some of my research notes on [my blog](https://heitorgouvea.me);
+My research focus is vulnerability discovery in applications/services and exploit devlopment, I have fun bypassing modern defenses, exploring systems and playing with new technologies and in parallel: sharing some of my research notes on [my blog](https://heitorgouvea.me); Here, you can find some of my experiments, advisories and analysis of advisories from others researchers.
 
 ---
 
-- CVE-2021-41773: container lab to play/learn with CVE-2021-41773;
-- Fuzz.PM: Differential fuzzing to find logic bugs on Perl Modules;
-- CVE-2021-22204: exploit and container lab to play/learn with CVE-2021-22204;
+### Research
+
+| Name      | Description | Category |
+| ----------- | ----------- | ----------- |
+| CVE-2021-41773 | Container lab to play/learn with CVE-2021-41773 | Analysis |
+| CVE-2021-22204 | Exploit and container lab to play/learn with CVE-2021-22204 | Analysis |
+| Fuzz.PM | Differential fuzzing to find logic bugs on Perl Modules | Experiment |
 
 ---
 
