@@ -20,9 +20,9 @@ My research focus is vulnerability discovery in applications/services and exploi
 
 | Name      | Description | Category |
 | ----------- | ----------- | ----------- |
-| [CVE-2021-41773](/tree/main/analysis/CVE-2021-41773) | Container lab to play/learn with CVE-2021-41773 | Analysis |
-| [CVE-2021-22204](/tree/main/analysis/CVE-2021-22204) | Exploit and container lab to play/learn with CVE-2021-22204 | Analysis |
-| [Fuzz.PM](/tree/main/fuzz.pm) | Differential fuzzing to find logic bugs on Perl Modules | Experiment |
+| [CVE-2021-41773](/analysis/CVE-2021-41773) | Container lab to play/learn with CVE-2021-41773 | Analysis |
+| [CVE-2021-22204](/analysis/CVE-2021-22204) | Exploit and container lab to play/learn with CVE-2021-22204 | Analysis |
+| [Fuzz.PM](/fuzz.pm) | Differential fuzzing to find logic bugs on Perl Modules | Experiment |
 
 ---
 
