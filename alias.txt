@@ -1,0 +1,3 @@
+alias escape="perl -MURI::Escape -e 'print uri_escape(<STDIN>)', \"\n\""
+alias unescape="perl -MURI::Escape -e 'print uri_unescape(<STDIN>)', \"\n\""
+alias kali="docker run -p 1337:1337 -v ~/Documents/:/home/ -it kali /bin/bash"

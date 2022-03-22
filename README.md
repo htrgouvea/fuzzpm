@@ -20,8 +20,8 @@ My research focus is vulnerability discovery in applications/services and exploi
 
 | Name      | Description | Category |
 | ----------- | ----------- | ----------- |
-| [CVE-2021-41773](/analysis/CVE-2021-41773) | Container lab to play/learn with CVE-2021-41773 | Analysis |
-| [CVE-2021-22204](/analysis/CVE-2021-22204) | Exploit and container lab to play/learn with CVE-2021-22204 | Analysis |
+| [CVE-2021-41773](/analysis/CVE-2021-41773) | RCE & LFI on feature to path normalization in Apache HTTP Server| Analysis |
+| [CVE-2021-22204](/analysis/CVE-2021-22204) | N-Day for RCE on Exiftool | Analysis |
 | [Fuzz.PM](/fuzz.pm) | Differential fuzzing to find logic bugs on Perl Modules | Experiment |
 
 ---
