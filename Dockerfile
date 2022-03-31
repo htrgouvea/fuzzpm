@@ -51,4 +51,4 @@ RUN GO111MODULE=on go get -v github.com/projectdiscovery/httpx/cmd/httpx && mv /
 RUN gem install aquatone
 RUN gunzip /usr/share/wordlists/rockyou.txt.gz
 
-# cpan install Find::Lib Mojo::File
+RUN cpan install Find::Lib Mojo::File
