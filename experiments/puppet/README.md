@@ -1,18 +1,23 @@
-# Extract Links
+# Puppet
+
+---
 
 ### Summary
 
-O objetivo desta aplicação é utilizar o puppeteer p/ disponibilizar um browser para o usuário final e através do hooking de todas as
-requests e responses executadas a partir do mesmo, enumerar todos os links que a aplicação lida e algumas possíveis vulnerabilidades
+The purpose of this application is to use puppeteer to make a browser available to the end user and by hooking all the
+requests and responses executed from it, enumerate all the links that the application handles and some possible vulnerabilities
 client-side based.
 
+---
 
 ### Potentials Vulns
 
 - XSSI
-- Clickjacking
+- Clickjacking 
 - Odd XFO
 - MIME attacks
+
+---
 
 ### References
 
