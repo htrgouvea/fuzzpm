@@ -1,11 +1,9 @@
 <p align="center">
   <h3 align="center">Advisories</h3>
-  <p align="center">Some notes, analysis and proof-of-concepts about my vulnerability research journey </p>
+  <p align="center">Public advisories originated from my research</p>
 </p>
 
 ---
-
-### 
 
 | ID      | Description | Link
 | ----------- | ----------- | ----------- |
