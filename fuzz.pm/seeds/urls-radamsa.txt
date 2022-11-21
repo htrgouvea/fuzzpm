@@ -1,4 +1,26 @@
 http://%127.0.0.1@0127.1.1.1/
+http://1.1.1.1&@2.2.2.2#@3.3.3.3/
+http://urllib2httplib1.1.1.1 &@2.2.2.2#@3.3.3.3/
+http://127.0.0.1:25/%0D%0AHELO%20orange.tw%0D%0AMAIL%20FROM...
+https://127.0.0.1%0D%0AHELO□orange.tw%0D%0AMAILFROM...:25/
+http://127.0.0.1:11211:80/
+http://google.com#@evil.com/
+http://foo@evil.com:80@google.com/
+http://foo@127.0.0.1 @google.com/
+http://orange.tw/sandbox/NN/passwd
+http://orange.tw/sandbox/\xFF\x2E\xFF\x2E/passwd
+127.0.0.1\r\nfoo
+http://127.0.0.1\tfoo.google.com
+baß.de
+http://baß.de
+http://127.0.0.1%09foo.google.com
+http://127.0.0.1%2509foo.google.com
+http://127.0.0.1%2509foo.google.com
+https://127.0.0.1\r\nSET foo 0 60 5\r\n:443/
+http://I-am-a-very-very-weird-domain.com
+http://127.0.0.1\r\nSLAVEOF orange.tw 6379\r\n:6379/
+http://127.0.0.1:11211#@google.com:80/
+http://foo@127.0.0.1:11211@google.com:80/
 http://0.0.0.0/
 http://0.0.0/
 http://0.0/

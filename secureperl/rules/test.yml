@@ -1,0 +1,17 @@
+- id: '0001'
+  category: warn
+  name: Excessive Debug modules
+  message: Large quantitity of modules to debug in a sa
+  sample:
+    - Data::Dumper
+    - Devel::Graph
+    - "PPI::"
+    - Devel::StackTrace
+  match: contains
+
+- id: '0002'
+  category: vulnerability
+  name: Read_File
+  message: Read a file and send the entries to other module
+  sample:
+    - ABC
