@@ -27,8 +27,8 @@ Using Differential Fuzzer to hunt for logic bugs on Perl Modules, full publicati
 try:
 
 ```bash
-$ perl fuzzer.pl cases/json-decode.yml
-$ perl fuzzer.pl cases/parsing-url.yml
+$ perl fuzzer.pl --case cases/json-decode.yml
+$ perl fuzzer.pl --case cases/parsing-url.yml
 ```
 
 ---
