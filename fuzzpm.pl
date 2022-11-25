@@ -4,10 +4,15 @@ use 5.018;
 use strict;
 use warnings;
 use YAML::Tiny;
+use Getopt::Long;
 use List::MoreUtils qw(any);
 
 sub main {
-    my $case = $ARGV[0];
+    my ($case);
+
+    Getopt::Long::GetOptions (
+        "c|case=s" => \$case,
+    );
 
     if ($case) {
         my $yamlfile = YAML::Tiny -> read($case);
