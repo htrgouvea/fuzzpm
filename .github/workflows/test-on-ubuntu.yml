@@ -1,0 +1,16 @@
+name: Testing on Ubuntu
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install dependencies
+      run: |
+        sudo apt install -y perl
+        sudo cpan install YAML::Tiny List::MoreUtils Getopt::Long
+    - name: Verify the basic usage
+      run: |
+        perl fuzzpm.pl
