@@ -3,7 +3,6 @@ package Json_Parse {
     use warnings;
     use JSON::Parse qw(parse_json);
     use Try::Tiny;
-    use Data::Dumper;
 
     sub new {
         my ($self, $payload) = @_;

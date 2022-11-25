@@ -3,7 +3,6 @@ package Json_On {
     use warnings;
     use JSON::ON;
     use Try::Tiny;
-    use Data::Dumper;
 
     sub new {
         my ($self, $payload) = @_;

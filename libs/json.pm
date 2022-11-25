@@ -3,7 +3,6 @@ package Json {
     use warnings;
     use JSON;
     use Try::Tiny;
-    use Data::Dumper;
 
     sub new {
         my ($self, $payload) = @_;
