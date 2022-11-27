@@ -1,7 +1,7 @@
 test:
     seeds:
         - seeds/json_interoparibility.txt
-    libs:
+    targets:
         - Json_On
         - Json
         - Mojo_Json

@@ -8,30 +8,26 @@ use Getopt::Long;
 use List::MoreUtils qw(any);
 
 sub main {
-    my ($case);
+    my ($case, @result);
 
     Getopt::Long::GetOptions (
-        "c|case=s" => \$case,
+        "c|case=s" => \$case
     );
 
     if ($case) {
         my $yamlfile = YAML::Tiny -> read($case);
-        my @seeds    = $yamlfile -> [0] -> {test} -> {seeds};
 
-        foreach my $seed_dump (@seeds) {
+        foreach my $seed_dump ($yamlfile -> [0] -> {test} -> {seeds}) {
             for my $seed (@$seed_dump) {
                 open (my $file, "<", $seed);
 
                 while (<$file>) {
                     chomp ($_);
                     print "[-] Seed \t -> $_\n";
-
-                    my @libs   = $yamlfile -> [0] -> {test} -> {libs};
-                    my @result = ();
                     
-                    foreach my $lib_dump (@libs) {
+                    foreach my $lib_dump ($yamlfile -> [0] -> {test} -> {targets}) {
                         for my $lib (@$lib_dump) {
-                            require "./libs/" . lc $lib . ".pm";
+                            require "./targets/" . lc $lib . ".pm";
                     
                             my $fuzz = $lib -> new($_);
                                 
@@ -45,7 +41,7 @@ sub main {
                         }
                     }
 
-                    print "\n\n";
+                    print "\n";
                 }
                 
                 close ($file);
@@ -53,7 +49,9 @@ sub main {
         }
     }
 
-    return 0;
+    else {
+        print "[-] Usage: fuzzpm.pl -c <case>\n";
+    }
 }
 
 exit main();
