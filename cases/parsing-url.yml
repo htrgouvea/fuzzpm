@@ -6,8 +6,4 @@ test:
         - Tiny_HTTP
         - Mojo_UA
         - Mechanize
-        - Lib_Furl
         - Simple_URI
-        # - LWP::UserAgent
-    method:
-        -
