@@ -1,12 +1,12 @@
 <p align="center">
-  <h3 align="center"><b>fuzzpm</b></h3>
+  <h3 align="center"><b>FuzzPM</b></h3>
   <p align="center">Differential Fuzzing for Perl Modules</p>
   <p align="center">
     <a href="https://github.com/htrgouvea/fuzzpm/blob/master/LICENSE.md">
       <img src="https://img.shields.io/badge/license-MIT-blue.svg">
     </a>
     <a href="https://github.com/htrgouvea/fuzzpm/releases">
-      <img src="https://img.shields.io/badge/version-0.0.1-blue.svg">
+      <img src="https://img.shields.io/badge/version-0.0.2-blue.svg">
     </a>
   </p>
 </p>
@@ -15,8 +15,9 @@
 
 ### Summary
 
-Using Differential Fuzzer to hunt for logic bugs on Perl Modules, full publication is avaible on:
-[https://heitorgouvea.me/2021/12/08/Differential-Fuzzing-Perl-Libs](https://heitorgouvea.me/2021/12/08/Differential-Fuzzing-Perl-Libs)
+This project aims to demonstrate how we can use the differential fuzzing technique to conduct security analysis in an automated and large-scale way to find security issues in modern components used by applications developed in Perl.
+
+Full publication is avaible on: [https://heitorgouvea.me/2021/12/08/Differential-Fuzzing-Perl-Libs](https://heitorgouvea.me/2021/12/08/Differential-Fuzzing-Perl-Libs)
 
 ---
 
@@ -31,6 +32,16 @@ $ cpanm --installdeps .
 ```
 
 ---
+
+### How it works
+
+Differential fuzzing is an approach where we have our seeds being sent to two or more inputs, where they are consumed and should produce the same output. At the end of the test these outputs are compared, in case of divergence the fuzzer will signal a possible failure. [1](#references)
+
+So basically we have 3 components:
+
+- Our targets;
+- Input seeds;
+- Test cases;
 
 ### Test Cases
 
@@ -73,3 +84,9 @@ $ docker run -ti --rm fuzzpm --help
 ### License
 
 - This work is licensed under [MIT License.](/LICENSE.md)
+
+---
+
+### References
+
+- [1] [https://en.wikipedia.org/wiki/Differential_testing](https://en.wikipedia.org/wiki/Differential_testing)
