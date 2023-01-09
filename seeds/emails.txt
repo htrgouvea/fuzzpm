@@ -1,0 +1,6 @@
+hildegarde@example.com
+hil°arde@example.com
+victim@exámple.com
+$i$gits@$ex$mple$.$c$m$
+victim%00@domain.com
+victim%00%00%00@domain.com
