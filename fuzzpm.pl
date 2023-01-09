@@ -5,13 +5,17 @@ use strict;
 use warnings;
 use YAML::Tiny;
 use Getopt::Long;
+use Find::Lib "./lib";
 use List::MoreUtils qw(any);
 
 sub main {
-    my ($case, @result);
+    my ($case, $mutation, $repeat, $help, @result);
 
     Getopt::Long::GetOptions (
-        "c|case=s" => \$case
+        "c|case=s"     => \$case,
+        "m|mutatition" => \$mutation,
+        "r|repeat=i"   => \$repeat,
+        "h|help"       => \$help
     );
 
     if ($case) {
