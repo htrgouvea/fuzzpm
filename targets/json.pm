@@ -3,6 +3,7 @@ package Json {
     use warnings;
     use JSON;
     use Try::Tiny;
+    use Data::Dumper;
 
     sub new {
         my ($self, $payload) = @_;
@@ -11,7 +12,7 @@ package Json {
             my $json = JSON -> new();
             my $decoded = decode_json($payload);
 
-            return $decoded;
+            return Dumper($decoded);
         }
 
         catch {

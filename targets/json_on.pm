@@ -3,6 +3,7 @@ package Json_On {
     use warnings;
     use JSON::ON;
     use Try::Tiny;
+    use Data::Dumper;
 
     sub new {
         my ($self, $payload) = @_;
@@ -11,7 +12,7 @@ package Json_On {
             my $json   = JSON::ON -> new();
             my $decode = $json -> decode($payload);
 
-            return $decode;
+            return $decode -> get_ascii;
         }
 
         catch {

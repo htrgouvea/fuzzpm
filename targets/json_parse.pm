@@ -3,6 +3,7 @@ package Json_Parse {
     use warnings;
     use JSON::Parse qw(parse_json);
     use Try::Tiny;
+    use Data::Dumper;
 
     sub new {
         my ($self, $payload) = @_;
@@ -11,7 +12,7 @@ package Json_Parse {
             my $json_parse = JSON::Parse -> new();
             my $output     = $json_parse -> parse($payload);
 
-            return $output;
+            return Dumper($output);
         }
 
         catch {

@@ -10,7 +10,7 @@ package Mojo_URI {
         try {
             my $url = Mojo::URL -> new($payload);
             
-            return $url -> host;
+            return $url -> host();
         }
 
         catch {
