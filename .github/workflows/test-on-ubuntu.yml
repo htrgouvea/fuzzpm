@@ -10,7 +10,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt install -y perl
-        sudo cpan install YAML::Tiny List::MoreUtils Getopt::Long
+        sudo cpanm --installdeps .
     - name: Verify the basic usage
       run: |
         perl fuzzpm.pl
