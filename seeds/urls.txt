@@ -11,6 +11,10 @@ http://www.victim.com/////evil.com
 google.com/abc
 https://///google.com
 https:///google.com
+http://%66%6f%6f%2e%63%6f%6d
+http:///foo.com
+foo.com
+http:\\foo.com
 https:/google.com
 https:\\google.com
 https:\google.com
@@ -79,3 +83,9 @@ https://g\u200Doogle.com
 https://google.com#@evil.com
 https://google.com:evil.com
 https://ⓖⓞⓞⓖⓛⓔ.com
+https://example՟com
+exámple.com
+$https://legit.example.com$
+https$:$/$/$legitS.$example$.$com
+https://l$git.ex$mple.c$m
+$https$:$/$/$I$git$.$ex$mple$.$c$m$
