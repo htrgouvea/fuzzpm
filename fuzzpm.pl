@@ -9,12 +9,10 @@ use Find::Lib "./lib";
 use List::MoreUtils qw(any);
 
 sub main {
-    my ($case, $mutation, $repeat, $help, @result);
+    my ($case, $help, @result);
 
     Getopt::Long::GetOptions (
         "c|case=s"     => \$case,
-        "m|mutatition" => \$mutation,
-        "r|repeat=i"   => \$repeat,
         "h|help"       => \$help
     );
 

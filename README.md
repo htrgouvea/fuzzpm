@@ -6,7 +6,7 @@
       <img src="https://img.shields.io/badge/license-MIT-blue.svg">
     </a>
     <a href="https://github.com/htrgouvea/fuzzpm/releases">
-      <img src="https://img.shields.io/badge/version-0.0.2-blue.svg">
+      <img src="https://img.shields.io/badge/version-0.0.3-blue.svg">
     </a>
   </p>
 </p>
@@ -15,7 +15,7 @@
 
 ### Summary
 
-This project aims to demonstrate how we can use the differential fuzzing technique to conduct security analysis in an automated and large-scale way to find security issues in modern components used by applications developed in Perl. Full publication is avaible on: [https://heitorgouvea.me/2021/12/08/Differential-Fuzzing-Perl-Libs](https://heitorgouvea.me/2021/12/08/Differential-Fuzzing-Perl-Libs)
+This project aims to demonstrate how we can use the differential fuzzing technique to conduct security analysis in an automated and large-scale way to find security issues in modern components used by applications developed in Perl. Full publication is avaible on: [https://heitorgouvea.me/2021/12/08/Differential-Fuzzing-Perl-Libs](https://heitorgouvea.me/2021/12/08/Differential-Fuzzing-Perl-Libs).
 
 ---
 
@@ -33,7 +33,7 @@ $ cpanm --installdeps .
 
 ### How it works
 
-Differential fuzzing is an approach where we have our seeds being sent to two or more inputs, where they are consumed and should produce the same output. At the end of the test these outputs are compared, in case of divergence the fuzzer will signal a possible failure. [[1]](#references)
+Differential fuzzing is an approach where we have our seeds being sent to two or more inputs, where they are consumed and should produce the same output. At the end of the test these outputs are compared, in case of divergence the fuzzer will signal a possible failure [[1]].(#references)
 
 So basically we have 3 components:
 
@@ -43,7 +43,7 @@ So basically we have 3 components:
 
 Here is a introduction about how you can create your own targets, seeds and test cases.
 
-Creating a new target:
+To create your entire fuzzing case, you first need to create your target library as a package, for example:
 
 ```perl
 package Mojo_URI {
@@ -68,33 +68,43 @@ package Mojo_URI {
 }
 ```
 
-Store at: ./targets/your-taget-name.pm
+Store at: ./targets/your-taget-name.pm.
 
-Seeds:
+So, you need store your seeds as a file at: ./seeds/your-seeds.txt. And the last part is your case as a YAML file, follow this structure:
 
-./seeds/your-file-name.txt
-
-One data per line
-
-
-Creating a new test case:
-
+```yaml
+test:
+    seeds:
+        - path/to/seeds-file.txt
+    libs:
+        - First_Target
+        - Second_Target
+        - Third_Target
 ```
-```
 
-./cases/your-file-name.yml
+For example, for our first case, the following YAML file was constructed and is supplied to the fuzzer via the parameter “--case”:
+
+```yaml
+test:
+    seeds:
+        - seeds/urls-radamsa.txt
+    libs:
+        - Mojo_URI
+        - Tiny_HTTP
+        - Mojo_UA
+        - Mechanize
+        - Lib_Furl
+        - Simple_URI
+```
 
 ---
 
 ### Fuzzing
 
-try:
-
 ```bash
 $ perl fuzzer.pl --case cases/json-decode.yml
 $ perl fuzzer.pl --case cases/parsing-url.yml
 ```
-
 
 ---
 
@@ -111,7 +121,7 @@ $ docker run -ti --rm fuzzpm --help
 
 - Your contributions and suggestions are heartily ♥ welcome. [See here the contribution guidelines.](/.github/CONTRIBUTING.md) Please, report bugs via [issues page](https://github.com/htrgouvea/fuzzpm/issues) and for security issues, see here the [security policy.](/SECURITY.md) (✿ ◕‿◕)
 
-- If you are interested in providing financial support to this project, please visit: [heitorgouvea.me/donate](https://heitorgouvea.me/donate)
+- If you are interested in providing financial support to this project, please visit: [heitorgouvea.me/donate](https://heitorgouvea.me/donate).
 
 ---
 

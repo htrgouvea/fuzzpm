@@ -9,7 +9,7 @@ jobs:
     - uses: actions/checkout@v1
     - name: Install dependencies
       run: |
-        sudo apt install -y perl
+        sudo apt install -y perl cpanminus
         sudo cpanm --installdeps .
     - name: Verify the basic usage
       run: |
