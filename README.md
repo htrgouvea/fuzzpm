@@ -33,7 +33,7 @@ $ cpanm --installdeps .
 
 ### How it works
 
-Differential fuzzing is an approach where we have our seeds being sent to two or more inputs, where they are consumed and should produce the same output. At the end of the test these outputs are compared, in case of divergence the fuzzer will signal a possible failure [[1]].(#references)
+Differential fuzzing is an approach where we have our seeds being sent to two or more inputs, where they are consumed and should produce the same output. At the end of the test these outputs are compared, in case of divergence the fuzzer will signal a possible failure [[1]].(https://en.wikipedia.org/wiki/Differential_testing)
 
 So basically we have 3 components:
 
@@ -119,18 +119,10 @@ $ docker run -ti --rm fuzzpm --help
 
 ### Contribution
 
-- Your contributions and suggestions are heartily ♥ welcome. [See here the contribution guidelines.](/.github/CONTRIBUTING.md) Please, report bugs via [issues page](https://github.com/htrgouvea/fuzzpm/issues) and for security issues, see here the [security policy.](/SECURITY.md) (✿ ◕‿◕)
-
-- If you are interested in providing financial support to this project, please visit: [heitorgouvea.me/donate](https://heitorgouvea.me/donate).
+Your contributions and suggestions are heartily ♥ welcome. [See here the contribution guidelines.](/.github/CONTRIBUTING.md) Please, report bugs via [issues page](https://github.com/htrgouvea/fuzzpm/issues) and for security issues, see here the [security policy.](/SECURITY.md) (✿ ◕‿◕)
 
 ---
 
 ### License
 
-- This work is licensed under [MIT License.](/LICENSE.md)
-
----
-
-### References
-
-- [1] [https://en.wikipedia.org/wiki/Differential_testing](https://en.wikipedia.org/wiki/Differential_testing);
+This work is licensed under [MIT License.](/LICENSE.md)
