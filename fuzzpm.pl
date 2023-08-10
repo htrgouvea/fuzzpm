@@ -12,8 +12,8 @@ sub main {
     my ($case, $help, @result);
 
     Getopt::Long::GetOptions (
-        "c|case=s"     => \$case,
-        "h|help"       => \$help
+        "c|case=s" => \$case,
+        "h|help"   => \$help
     );
 
     if ($case) {
@@ -53,6 +53,7 @@ sub main {
 
     else {
         print "[-] Usage: fuzzpm.pl -c <case>\n";
+        return 0;
     }
 }
 
