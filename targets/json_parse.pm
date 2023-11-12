@@ -7,7 +7,7 @@ package Json_Parse {
 
     sub new {
         my ($self, $payload) = @_;
-        
+
         try {
             my $json_parse = JSON::Parse -> new();
             my $output     = $json_parse -> parse($payload);
@@ -16,7 +16,7 @@ package Json_Parse {
         }
 
         catch {
-            return undef;
+            return 0;
         }
     }
 }

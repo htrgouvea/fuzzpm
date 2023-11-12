@@ -7,7 +7,7 @@ package Json {
 
     sub new {
         my ($self, $payload) = @_;
-        
+
         try {
             my $json = JSON -> new();
             my $decoded = decode_json($payload);
@@ -16,7 +16,7 @@ package Json {
         }
 
         catch {
-            return undef;
+            return 0;
         }
     }
 }

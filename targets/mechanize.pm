@@ -15,7 +15,7 @@ package Mechanize {
         }
 
         catch {
-            return undef;
+            return 0;
         }
     }
 }

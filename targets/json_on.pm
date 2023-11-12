@@ -16,7 +16,7 @@ package Json_On {
         }
 
         catch {
-            return undef;
+            return 0;
         }
     }
 }

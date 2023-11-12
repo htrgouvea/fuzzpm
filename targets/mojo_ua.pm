@@ -15,7 +15,7 @@ package Mojo_UA {
         }
 
         catch {
-            return undef;
+            return 0;
         }
     }
 }

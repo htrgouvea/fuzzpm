@@ -4,10 +4,10 @@ package Mojo_Json {
     use Mojo::JSON qw(decode_json encode_json);
     use Try::Tiny;
     use Data::Dumper;
-    
+
     sub new {
         my ($self, $payload) = @_;
-        
+
        try {
             my $data = decode_json ($payload);
 
@@ -15,7 +15,7 @@ package Mojo_Json {
         }
 
         catch {
-            return undef;
+            return 0;
         }
     }
 }

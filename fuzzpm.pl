@@ -26,26 +26,26 @@ sub main {
                 while (<$file>) {
                     chomp ($_);
                     print "[-] Seed \t -> $_\n";
-                    
+
                     foreach my $lib_dump ($yamlfile -> [0] -> {test} -> {targets}) {
                         for my $lib (@$lib_dump) {
                             require "./targets/" . lc $lib . ".pm";
-                    
+
                             my $fuzz = $lib -> new($_);
-                                
+
                             if ($fuzz) {
                                 push @result, $fuzz;
 
                                 if (any {$_ ne $fuzz} @result) {
-                                    print "[+] $lib \t $fuzz\n";  
-                                }                
+                                    print "[+] $lib \t $fuzz\n";
+                                }
                             }
                         }
                     }
 
                     print "\n";
                 }
-                
+
                 close ($file);
             }
         }

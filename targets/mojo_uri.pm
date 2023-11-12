@@ -9,12 +9,12 @@ package Mojo_URI {
 
         try {
             my $url = Mojo::URL -> new($payload);
-            
+
             return $url -> host();
         }
 
         catch {
-            return undef;
+            return 0;
         }
     }
 }

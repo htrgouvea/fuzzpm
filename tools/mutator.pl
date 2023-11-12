@@ -6,7 +6,7 @@ use warnings;
 
 sub main {
     my $seed = $ARGV[0];
-        
+
     if ($seed) {
         my @chars = split //, $seed;
 

@@ -9,12 +9,12 @@ package Tiny_HTTP {
 
         try {
             my $tiny = HTTP::Tiny -> new() -> get ($payload);
-            
+
             return $tiny -> {url};
         }
 
         catch {
-            return undef;
+            return 0;
         }
     }
 }

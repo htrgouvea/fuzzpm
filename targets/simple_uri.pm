@@ -9,12 +9,12 @@ package Simple_URI {
 
         try {
             my $uri = URI -> new($payload);
-            
+
             return $uri -> host();
         }
 
         catch {
-            return undef;
+            return 0;
         }
     }
 }
