@@ -4,3 +4,9 @@ victim@exámple.com
 $i$gits@$ex$mple$.$c$m$
 victim%00@domain.com
 victim%00%00%00@domain.com
+jöhn.døê@gmail.com
+“john.doe”@example.com
+"😀"@gmail.com
+" "@example.com
+“@”@example.com
+“\"”@example.com
