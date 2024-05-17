@@ -6,8 +6,12 @@
       <img src="https://img.shields.io/badge/license-MIT-blue.svg">
     </a>
     <a href="https://github.com/htrgouvea/fuzzpm/releases">
-      <img src="https://img.shields.io/badge/version-0.0.3-blue.svg">
+      <img src="https://img.shields.io/badge/version-0.0.4-blue.svg">
     </a>
+    <br/>
+    <img src="https://github.com/htrgouvea/fuzzpm/actions/workflows/linter.yml/badge.svg">
+    <img src="https://github.com/htrgouvea/fuzzpm/actions/workflows/sast.yml/badge.svg">
+    <img src="https://github.com/htrgouvea/fuzzpm/actions/workflows/security-gate.yml/badge.svg">
   </p>
 </p>
 
@@ -102,8 +106,8 @@ test:
 ### Fuzzing
 
 ```bash
-$ perl fuzzer.pl --case cases/json-decode.yml
-$ perl fuzzer.pl --case cases/parsing-url.yml
+$ perl fuzzpm.pl --case cases/json-decode.yml
+$ perl fuzzpm.pl --case cases/parsing-url.yml
 ```
 
 ---
