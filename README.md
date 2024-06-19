@@ -12,6 +12,7 @@
     <img src="https://github.com/htrgouvea/fuzzpm/actions/workflows/linter.yml/badge.svg">
     <img src="https://github.com/htrgouvea/fuzzpm/actions/workflows/zarn.yml/badge.svg">
     <img src="https://github.com/htrgouvea/fuzzpm/actions/workflows/security-gate.yml/badge.svg">
+    <img src="https://github.com/htrgouvea/fuzzpm/actions/workflows/test-on-ubuntu.yml/badge.svg">
   </p>
 </p>
 
