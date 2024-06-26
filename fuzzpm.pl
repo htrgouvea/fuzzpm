@@ -57,4 +57,4 @@ sub main {
     }
 }
 
-exit main();
+main();
