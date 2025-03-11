@@ -3,7 +3,7 @@ test:
         - seeds/urls.txt
     targets:
         - Mojo_URI
-        - Tiny_HTTP
         - Mojo_UA
         - Mechanize
         - Simple_URI
+    target_folder: targets/url

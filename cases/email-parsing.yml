@@ -1,0 +1,7 @@
+test:
+    seeds:
+        - seeds/emails.txt
+    targets:
+        - Email_Valid
+        - Email_Address
+    target_folder: targets/email

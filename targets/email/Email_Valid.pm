@@ -1,18 +1,18 @@
-package Mojo_URI {
+package Email_Valid {
     use strict;
     use warnings;
     use Try::Tiny;
-    use Mojo::URL;
+    use Email::Valid;
 
     sub new {
         my ($self, $payload) = @_;
-
+        
         try {
-            my $url = Mojo::URL -> new($payload);
-
-            return $url -> host();
+            my $address = Email::Valid->address($payload);
+            
+            return $address ? lc($address) : 0;
         }
-
+        
         catch {
             return 0;
         }

@@ -3,18 +3,17 @@ package Json {
     use warnings;
     use JSON;
     use Try::Tiny;
-    use Data::Dumper;
 
     sub new {
         my ($self, $payload) = @_;
-
+        
         try {
-            my $json = JSON -> new();
-            my $decoded = decode_json($payload);
-
-            return Dumper($decoded);
+            my $json = JSON->new->canonical;
+            my $data = $json->decode($payload);
+            
+            return $json->encode($data);
         }
-
+        
         catch {
             return 0;
         }
