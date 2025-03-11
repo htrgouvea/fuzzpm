@@ -6,14 +6,14 @@ package Mojo_UA {
 
     sub new {
         my ($self, $payload) = @_;
-
+        
         try {
-            my $mojo_ua  = Mojo::UserAgent -> new();
-            my $response = $mojo_ua -> get($payload);
-
-            return  $response -> req() -> url() -> host();
+            my $ua = Mojo::UserAgent->new();
+            my $response = $ua->get($payload);
+            
+            return $response->req->url->host;
         }
-
+        
         catch {
             return 0;
         }

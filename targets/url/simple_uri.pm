@@ -6,13 +6,13 @@ package Simple_URI {
 
     sub new {
         my ($self, $payload) = @_;
-
+        
         try {
-            my $uri = URI -> new($payload);
-
-            return $uri -> host();
+            my $uri = URI->new($payload);
+            
+            return $uri->host;
         }
-
+        
         catch {
             return 0;
         }

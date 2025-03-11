@@ -3,7 +3,7 @@ test:
         - seeds/json.txt
     targets:
         - Json_On
+        - Json_Parse
         - Json
         - Mojo_Json
-        - Json_Parse
-        - Json_On
+    target_folder: targets/json

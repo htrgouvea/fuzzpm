@@ -3,18 +3,17 @@ package Json_Parse {
     use warnings;
     use JSON::Parse qw(parse_json);
     use Try::Tiny;
-    use Data::Dumper;
+    use JSON;
 
     sub new {
         my ($self, $payload) = @_;
-
+        
         try {
-            my $json_parse = JSON::Parse -> new();
-            my $output     = $json_parse -> parse($payload);
-
-            return Dumper($output);
+            my $data = parse_json($payload);
+            
+            return JSON->new->canonical->encode($data);
         }
-
+        
         catch {
             return 0;
         }
@@ -22,5 +21,3 @@ package Json_Parse {
 }
 
 1;
-
-

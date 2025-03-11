@@ -10,3 +10,8 @@ jöhn.døê@gmail.com
 " "@example.com
 “@”@example.com
 “\"”@example.com
+user@example.com
+"User Name" <user@example.com>
+invalid-email@domain
+user.name+tag+sorting@example.com
+user@[IPv6:2001:db8::1]

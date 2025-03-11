@@ -1,19 +1,18 @@
-package Mechanize {
+package Mojo_URI {
     use strict;
     use warnings;
     use Try::Tiny;
-    use WWW::Mechanize;
+    use Mojo::URL;
 
     sub new {
         my ($self, $payload) = @_;
-
+        
         try {
-            my $mech = WWW::Mechanize -> new();
-            $mech -> get ($payload);
-
-            return $mech -> {uri};
+            my $url = Mojo::URL->new($payload);
+            
+            return $url->host;
         }
-
+        
         catch {
             return 0;
         }
