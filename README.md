@@ -6,7 +6,7 @@
       <img src="https://img.shields.io/badge/license-MIT-blue.svg">
     </a>
     <a href="https://github.com/htrgouvea/fuzzpm/releases">
-      <img src="https://img.shields.io/badge/version-0.0.4-blue.svg">
+      <img src="https://img.shields.io/badge/version-0.1.5-blue.svg">
     </a>
     <br/>
     <img src="https://github.com/htrgouvea/fuzzpm/actions/workflows/linter.yml/badge.svg">
@@ -59,18 +59,20 @@ package Mojo_URI {
 
     sub new {
         my ($self, $payload) = @_;
-
+        
         try {
-            my $url = Mojo::URL -> new($payload);
+            my $url = Mojo::URL->new($payload);
             
-            return $url -> host;
+            return $url->host;
         }
-
+        
         catch {
-            return undef;
+            return 0;
         }
     }
 }
+
+1;
 ```
 
 Store at: ./targets/your-taget-name.pm.
@@ -85,6 +87,7 @@ test:
         - First_Target
         - Second_Target
         - Third_Target
+      
 ```
 
 For example, for our first case, the following YAML file was constructed and is supplied to the fuzzer via the parameter “--case”:
@@ -92,14 +95,13 @@ For example, for our first case, the following YAML file was constructed and is 
 ```yaml
 test:
     seeds:
-        - seeds/urls-radamsa.txt
-    libs:
+        - seeds/urls.txt
+    targets:
         - Mojo_URI
-        - Tiny_HTTP
         - Mojo_UA
         - Mechanize
-        - Lib_Furl
         - Simple_URI
+    target_folder: targets/url
 ```
 
 ---
