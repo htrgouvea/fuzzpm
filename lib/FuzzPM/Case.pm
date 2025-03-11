@@ -7,7 +7,7 @@ package FuzzPM::Case {
         my ($file) = @_;
         my $yaml = YAML::Tiny -> read($file) or die "Error reading file $file: $!";
 
-        return $yaml->[0]->{test};
+        return $yaml -> [0] -> {test};
     }
 }
 

@@ -6,70 +6,86 @@ package FuzzPM::Runner {
     use threads::shared;
     use List::MoreUtils qw(any);
 
-    my $OUTPUT_LOCK :shared = 1;
+    my $OUTPUT_LOCK : shared = 1;
 
     sub run {
-        my ($case_data, $num_threads) = @_;
+        my ($test_case, $num_threads) = @_;
+        
         $num_threads //= 4;
 
-        my $seed_files    = $case_data->{seeds};
-        my $targets       = $case_data->{targets} || $case_data->{libs};
-        my $target_folder = $case_data->{target_folder} // "targets";
+        my $seed_files     = $test_case -> {seeds};
+        my $target_modules = $test_case -> {targets} || $test_case -> {libs};
+        my $module_folder  = $test_case -> {target_folder} // "targets";
 
-        foreach my $target (@$targets) {
-            my $module_path = "./" . $target_folder . "/" . lc($target) . ".pm";
+        foreach my $module (@$target_modules) {
+            my $module_path = "./" . $module_folder . "/" . lc($module) . ".pm";
+            
             require $module_path;
         }
 
-        my $q = Thread::Queue->new();
+        my $queue = Thread::Queue -> new();
+        
         foreach my $seed_file (@$seed_files) {
             open my $fh, '<', $seed_file or die "Cannot open file $seed_file: $!";
+            
             while (my $line = <$fh>) {
                 chomp $line;
-                $q->enqueue($line);
+                $queue -> enqueue($line);
             }
+            
             close $fh;
         }
-        $q->end();
+        
+        $queue -> end();
 
         my @threads;
+        
         for (1 .. $num_threads) {
-            push @threads, threads->create(\&worker, $q, $targets);
+            push @threads, threads -> create(\&worker, $queue, $target_modules);
         }
-        $_->join() for @threads;
+        
+        $_ -> join() for @threads;
     }
 
     sub worker {
-        my ($q, $targets) = @_;
-        while (defined(my $line = $q->dequeue())) {
+        my ($queue, $target_modules) = @_;
+        
+        while (defined(my $line = $queue -> dequeue())) {
             {
                 lock($OUTPUT_LOCK);
-                print "[-] Seed \t -> $line\n";
+                print "[-] Seed\t-> $line\n";
             }
 
-            my @results;
-            foreach my $target (@$targets) {
+            my @module_results;
+            
+            foreach my $module (@$target_modules) {
                 no strict 'refs';
-                my $output = $target->new($line);
+                
+                my $result = $module -> new($line);
+                
                 use strict 'refs';
-                push @results, { target => $target, output => $output }
-                    if defined $output && $output;
+                
+                push @module_results, { module => $module, result => $result }
+                    if defined $result && $result;
             }
 
-            if (@results > 1) {
-                my $first = $results[0]->{output};
-                my $divergence = 0;
-                foreach my $res (@results) {
-                    if ($res->{output} ne $first) {
-                        $divergence = 1;
+            if (@module_results > 1) {
+                my $first_output = $module_results[0] -> {result};
+                my $diverged     = 0;
+               
+                foreach my $res (@module_results) {
+                    if ($res -> {result} ne $first_output) {
+                        $diverged = 1;
                         last;
                     }
                 }
-                if ($divergence) {
+                if ($diverged) {
                     lock($OUTPUT_LOCK);
-                    foreach my $res (@results) {
-                        print "[+] $res->{target} \t $res->{output}\n";
+                    
+                    foreach my $res (@module_results) {
+                        print "[+] " . $res -> {module} . "\t" . $res -> {result} . "\n";
                     }
+                    
                     print "\n";
                 }
             }
