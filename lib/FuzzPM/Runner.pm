@@ -45,6 +45,8 @@ package FuzzPM::Runner {
         }
         
         $_ -> join() for @threads;
+
+        return 1;
     }
 
     sub worker {
@@ -91,6 +93,8 @@ package FuzzPM::Runner {
             }
         }
     }
+
+    return 1;
 }
 
 1;
