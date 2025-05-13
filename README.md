@@ -20,7 +20,7 @@
 
 ### Summary
 
-This project aims to demonstrate how we can use the differential fuzzing technique to conduct security analysis in an automated and large-scale way to find security issues in modern components used by applications developed in Perl. Full publication is avaible on: [https://heitorgouvea.me/2021/12/08/Differential-Fuzzing-Perl-Libs](https://heitorgouvea.me/2021/12/08/Differential-Fuzzing-Perl-Libs).
+FuzzPM demonstrates how to use differential fuzzing to perform automated, large-scale security analysis of modern Perl components. By comparing outputs from multiple modules against the same inputs, it helps uncover inconsistencies and potential vulnerabilities. For more details, read the full publication on: [https://heitorgouvea.me/2021/12/08/Differential-Fuzzing-Perl-Libs](https://heitorgouvea.me/2021/12/08/Differential-Fuzzing-Perl-Libs).
 
 ---
 
@@ -40,14 +40,13 @@ $ cpanm --installdeps .
 
 Differential fuzzing is an approach where we have our seeds being sent to two or more inputs, where they are consumed and should produce the same output. At the end of the test these outputs are compared, in case of divergence the fuzzer will signal a possible failure [[1]].(https://en.wikipedia.org/wiki/Differential_testing)
 
-So basically we have 3 components:
+There are three key components:
 
-- Our targets;
-- Input seeds;
-- Test cases;
+ - Targets: Perl modules to test.
+ - Input Seeds: Files containing the input data.
+ - Test Cases: YAML files that define which seeds and targets to use.
 
 Here is a introduction about how you can create your own targets, seeds and test cases.
-
 To create your entire fuzzing case, you first need to create your target library as a package, for example:
 
 ```perl
@@ -75,22 +74,9 @@ package Mojo_URI {
 1;
 ```
 
-Store at: ./targets/your-taget-name.pm.
-
-So, you need store your seeds as a file at: ./seeds/your-seeds.txt. And the last part is your case as a YAML file, follow this structure:
-
-```yaml
-test:
-    seeds:
-        - path/to/seeds-file.txt
-    libs:
-        - First_Target
-        - Second_Target
-        - Third_Target
-      
-```
-
-For example, for our first case, the following YAML file was constructed and is supplied to the fuzzer via the parameter “--case”:
+Store at: ./targets/<folder>/<your-taget-name.pm>.
+Store your seeds in a text file (e.g., ./seeds/your-seeds.txt).
+Create a YAML file to link your seeds with your targets. For example:
 
 ```yaml
 test:
