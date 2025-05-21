@@ -1,14 +1,21 @@
 package FuzzPM::Component::Mutator {
+    our $VERSION = '0.0.1';
+
     use strict;
     use warnings;
+    use Getopt::Long;
 
     sub new {
-        my ($class, $seed) = @_;
+        my ($self, $seed) = @_;
+
+        GetOptions (
+            's|seed=s' => \$seed
+        );
 
         if ($seed) {
             my @chars = split //, $seed;
 
-            for (my $i = 0; $i < @chars; $i++) {
+            foreach my $i (0 .. $#chars) {
                 my $random = int(rand(@chars));
                 my $temp   = $chars[$i];
 
@@ -16,7 +23,7 @@ package FuzzPM::Component::Mutator {
                 $chars[$random] = $temp;
             }
 
-            return join("", @chars);
+            return join('', @chars);
         }
 
         return 0;

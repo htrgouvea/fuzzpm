@@ -1,5 +1,7 @@
 #!/usr/bin/env perl
 
+our $VERSION = '0.0.1';
+
 use strict;
 use warnings;
 use lib 'lib';
@@ -15,6 +17,6 @@ if ($opts -> {help} || !$opts -> {case}) {
     exit 0;
 }
 
-my $case_data = FuzzPM::Component::Case::new ($opts -> {case});
+my $case_data = FuzzPM::Component::Case -> new ($opts -> {case});
 
 FuzzPM::Network::Runner::run($case_data, $opts -> {threads});
