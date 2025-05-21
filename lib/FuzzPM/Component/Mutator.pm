@@ -1,4 +1,4 @@
-package FuzzPM::Mutator {
+package FuzzPM::Compontent::Mutator {
     use strict;
     use warnings;
 

@@ -1,9 +1,9 @@
-package FuzzPM::Case {
+package FuzzPM::Component::Case {
     use strict;
     use warnings;
     use YAML::Tiny;
 
-    sub load_case {
+    sub new {
         my ($file) = @_;
         my $yaml = YAML::Tiny -> read($file) or die "Error reading file $file: $!";
 

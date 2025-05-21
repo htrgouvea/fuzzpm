@@ -1,4 +1,4 @@
-package FuzzPM::Runner {
+package FuzzPM::Network::Runner {
     use strict;
     use warnings;
     use threads;

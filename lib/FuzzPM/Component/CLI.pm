@@ -1,9 +1,9 @@
-package FuzzPM::CLI {
+package FuzzPM::Component::CLI {
     use strict;
     use warnings;
     use Getopt::Long;
 
-    sub parse_options {
+    sub new {
         my %opts;
 
         GetOptions(
