@@ -1,0 +1,2 @@
+requires "Email::Address";
+requires "Email::Valid";
