@@ -1,17 +1,21 @@
-package FuzzPM::Runner {
+package FuzzPM::Network::Runner {
+    our $VERSION = '0.0.1';
+
     use strict;
     use warnings;
     use threads;
     use Thread::Queue;
     use threads::shared;
     use List::MoreUtils qw(any);
+    
+    use constant DEFAULT_NUM_THREADS => 4;
 
     my $OUTPUT_LOCK : shared = 1;
 
     sub run {
         my ($test_case, $num_threads) = @_;
         
-        $num_threads //= 4;
+        $num_threads //= DEFAULT_NUM_THREADS;
 
         my $seed_files     = $test_case -> {seeds};
         my $target_modules = $test_case -> {targets} || $test_case -> {libs};
@@ -67,8 +71,9 @@ package FuzzPM::Runner {
                 
                 use strict 'refs';
                 
-                push @module_results, { module => $module, result => $result }
-                    if defined $result && $result;
+                if (defined $result && $result) {
+                    push @module_results, { module => $module, result => $result };
+                }
             }
 
             if (@module_results > 1) {
