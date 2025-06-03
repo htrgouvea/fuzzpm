@@ -1,9 +1,9 @@
 package FuzzPM::Component::Mutator {
-    our $VERSION = '0.0.1';
-
     use strict;
     use warnings;
     use Getopt::Long;
+    
+    our $VERSION = '0.0.1';
 
     sub new {
         my ($self, $seed) = @_;

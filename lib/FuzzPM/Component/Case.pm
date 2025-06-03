@@ -1,11 +1,11 @@
 package FuzzPM::Component::Case {
-    our $VERSION = '0.0.1';
-    
     use strict;
     use warnings;
     use YAML::Tiny;
     use Carp qw(croak);
     use Getopt::Long;
+
+    our $VERSION = '0.0.2';
 
     sub new {
         my ($self, $file) = @_;
