@@ -7,22 +7,25 @@ package FuzzPM::Network::Runner {
     use Thread::Queue;
     use threads::shared;
     use List::MoreUtils qw(any);
-    
-    use constant DEFAULT_NUM_THREADS => 4;
+    use Readonly;
+    use Carp qw(croak);
+    use English '-no_match_vars';
+
+    Readonly my $DEFAULT_NUM_THREADS => 4;
 
     my $OUTPUT_LOCK : shared = 1;
 
     sub run {
         my ($test_case, $num_threads) = @_;
         
-        $num_threads //= DEFAULT_NUM_THREADS;
+        $num_threads //= $DEFAULT_NUM_THREADS;
 
         my $seed_files     = $test_case -> {seeds};
         my $target_modules = $test_case -> {targets} || $test_case -> {libs};
         my $module_folder  = $test_case -> {target_folder} // "targets";
 
         foreach my $module (@$target_modules) {
-            my $module_path = "./" . $module_folder . "/" . lc($module) . ".pm";
+            my $module_path = "./$module_folder/" . lc($module) . ".pm";
             
             require $module_path;
         }
@@ -30,14 +33,14 @@ package FuzzPM::Network::Runner {
         my $queue = Thread::Queue -> new();
         
         foreach my $seed_file (@$seed_files) {
-            open my $fh, '<', $seed_file or die "Cannot open file $seed_file: $!";
+            open my $fh, '<', $seed_file or croak "Cannot open file $seed_file: $OS_ERROR";
             
             while (my $line = <$fh>) {
                 chomp $line;
                 $queue -> enqueue($line);
             }
             
-            close $fh;
+            close $fh or croak "Cannot close file $seed_file: $OS_ERROR";
         }
         
         $queue -> end();
@@ -48,7 +51,9 @@ package FuzzPM::Network::Runner {
             push @threads, threads -> create(\&worker, $queue, $target_modules);
         }
         
-        $_ -> join() for @threads;
+        foreach my $thr (@threads) {
+            $thr -> join();
+        }
 
         return 1;
     }
@@ -97,6 +102,7 @@ package FuzzPM::Network::Runner {
                 }
             }
         }
+        return;
     }
 
     return 1;

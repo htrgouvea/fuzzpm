@@ -4,6 +4,7 @@ package FuzzPM::Component::Case {
     use YAML::Tiny;
     use Carp qw(croak);
     use Getopt::Long;
+    use English '-no_match_vars';
 
     our $VERSION = '0.0.2';
 
@@ -15,7 +16,7 @@ package FuzzPM::Component::Case {
         );
 
         if ($file) {
-             my $yaml = YAML::Tiny -> read($file) or croak "Error reading file $file: $!";
+             my $yaml = YAML::Tiny -> read($file) or croak "Error reading file $file: $OS_ERROR";
 
             return $yaml -> [0] -> {test};
         }

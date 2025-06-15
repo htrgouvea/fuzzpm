@@ -13,7 +13,7 @@ package FuzzPM::Component::Mutator {
         );
 
         if ($seed) {
-            my @chars = split //, $seed;
+            my @chars = split(qr//sm, $seed);
 
             foreach my $i (0 .. $#chars) {
                 my $random = int(rand(@chars));
@@ -23,7 +23,7 @@ package FuzzPM::Component::Mutator {
                 $chars[$random] = $temp;
             }
 
-            return join('', @chars);
+            return join(q{}, @chars);
         }
 
         return 0;
