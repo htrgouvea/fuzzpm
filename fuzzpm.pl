@@ -14,7 +14,7 @@ my $opts = FuzzPM::Component::CLI -> new();
 
 if ($opts -> {help} || !$opts -> {case}) {
     print 'Usage: ' . $PROGRAM_NAME . " --case <file.yml> [--threads <num>]\n";
-    
+
     exit 0;
 }
 
