@@ -6,7 +6,7 @@ package FuzzPM::Component::Case {
     use Getopt::Long;
     use English '-no_match_vars';
 
-    our $VERSION = '0.0.2';
+    our $VERSION = '0.0.3';
 
     sub new {
         my ($self, $file) = @_;

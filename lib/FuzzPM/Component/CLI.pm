@@ -3,7 +3,7 @@ package FuzzPM::Component::CLI {
     use warnings;
     use Getopt::Long;
 
-    our $VERSION = '0.0.2';
+    our $VERSION = '0.0.3';
 
     sub new {
         my ($self, %opts) = @_;
