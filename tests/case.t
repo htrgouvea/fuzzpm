@@ -1,11 +1,12 @@
 #!/usr/bin/env perl
+
 use strict;
 use warnings;
 use Test::More tests => 1;
 use File::Temp qw(tempfile);
 use FindBin;
 use lib "$FindBin::Bin/../lib";
-use FuzzPM::Case;
+use FuzzPM::Component::Case;
 
 my ($fh, $filename) = tempfile(SUFFIX => '.yml');
 print $fh <<"EOF";
@@ -18,7 +19,10 @@ test:
 EOF
 close $fh;
 
-my $case = FuzzPM::Case::load_case($filename);
+local @ARGV = ('--case', $filename);
+
+my $case = FuzzPM::Component::Case -> new();
+
 is_deeply(
     $case,
     {
