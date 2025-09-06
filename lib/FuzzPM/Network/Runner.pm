@@ -70,11 +70,7 @@ package FuzzPM::Network::Runner {
             my @module_results;
 
             foreach my $module ( @{ $target_modules } ) {
-                no strict 'refs';
-
                 my $result = $module -> new($line);
-
-                use strict 'refs';
 
                 if (defined $result && $result) {
                     push @module_results, { module => $module, result => $result };
@@ -88,6 +84,7 @@ package FuzzPM::Network::Runner {
                 foreach my $res (@module_results) {
                     if ($res -> {result} ne $first_output) {
                         $diverged = 1;
+                        
                         last;
                     }
                 }

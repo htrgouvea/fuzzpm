@@ -23,7 +23,7 @@ package FuzzPM::Component::Mutator {
                 $chars[$random] = $temp;
             }
 
-            return join q{}, @chars;
+            return join('', @chars);
         }
 
         return 0;

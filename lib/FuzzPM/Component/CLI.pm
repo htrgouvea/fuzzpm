@@ -2,7 +2,7 @@ package FuzzPM::Component::CLI {
     use strict;
     use warnings;
     use Getopt::Long;
-
+    
     our $VERSION = '0.0.3';
 
     sub new {
