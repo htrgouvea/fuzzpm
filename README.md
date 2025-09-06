@@ -6,7 +6,7 @@
       <img src="https://img.shields.io/badge/license-MIT-blue.svg">
     </a>
     <a href="https://github.com/htrgouvea/fuzzpm/releases">
-      <img src="https://img.shields.io/badge/version-0.1.5-blue.svg">
+      <img src="https://img.shields.io/badge/version-0.1.6-blue.svg">
     </a>
     <br/>
     <img src="https://github.com/htrgouvea/fuzzpm/actions/workflows/linter.yml/badge.svg">
@@ -40,6 +40,8 @@ $ cpanm --installdeps .
 
 Differential fuzzing is an approach where we have our seeds being sent to two or more inputs, where they are consumed and should produce the same output. At the end of the test these outputs are compared, in case of divergence the fuzzer will signal a possible failure [[1]].(https://en.wikipedia.org/wiki/Differential_testing)
 
+![Image](https://heitorgouvea.me/images/publications/perl-lib-fuzz/fuzz-diagram.png)
+
 There are three key components:
 
  - Targets: Perl modules to test.
@@ -60,9 +62,9 @@ package Mojo_URI {
         my ($self, $payload) = @_;
         
         try {
-            my $url = Mojo::URL->new($payload);
+            my $url = Mojo::URL -> new($payload);
             
-            return $url->host;
+            return $url -> host();
         }
         
         catch {

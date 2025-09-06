@@ -1,9 +1,9 @@
 package FuzzPM::Component::CLI {
-    our $VERSION = '0.0.1';
-
     use strict;
     use warnings;
     use Getopt::Long;
+    
+    our $VERSION = '0.0.3';
 
     sub new {
         my ($self, %opts) = @_;

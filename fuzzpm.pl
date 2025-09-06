@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 
-our $VERSION = '0.0.1';
+our $VERSION = '0.0.3';
 
 use strict;
 use warnings;
@@ -8,12 +8,13 @@ use lib 'lib';
 use FuzzPM::Component::CLI;
 use FuzzPM::Component::Case;
 use FuzzPM::Network::Runner;
+use English qw(-no_match_vars);
 
 my $opts = FuzzPM::Component::CLI -> new();
 
 if ($opts -> {help} || !$opts -> {case}) {
-    print "Usage: $0 --case <file.yml> [--threads <num>]\n";
-    
+    print 'Usage: ' . $PROGRAM_NAME . " --case <file.yml> [--threads <num>]\n";
+
     exit 0;
 }
 
