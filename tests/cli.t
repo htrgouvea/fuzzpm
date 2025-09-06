@@ -7,6 +7,8 @@ use FindBin;
 use lib "$FindBin::Bin/../lib";
 use FuzzPM::Component::CLI;
 
+our $VERSION = '0.0.1';
+
 local @ARGV = qw(--case test.yml --threads 2);
 my $opts = FuzzPM::Component::CLI -> new();
 
