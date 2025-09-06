@@ -3,7 +3,7 @@ package FuzzPM::Component::Mutator {
     use warnings;
     use Getopt::Long;
 
-    our $VERSION = '0.0.2';
+    our $VERSION = '0.0.3';
 
     sub new {
         my ($self, $seed) = @_;
@@ -23,7 +23,7 @@ package FuzzPM::Component::Mutator {
                 $chars[$random] = $temp;
             }
 
-            return join('', @chars);
+            return join @chars;
         }
 
         return 0;
