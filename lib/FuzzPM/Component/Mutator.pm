@@ -3,7 +3,7 @@ package FuzzPM::Component::Mutator {
     use warnings;
     use Getopt::Long;
 
-    our $VERSION = '0.0.3';
+    our $VERSION = '0.0.4';
 
     sub new {
         my ($self, $seed) = @_;
