@@ -1,7 +1,5 @@
 #!/usr/bin/env perl
 
-our $VERSION = '0.0.3';
-
 use strict;
 use warnings;
 use lib 'lib';
@@ -10,10 +8,20 @@ use FuzzPM::Component::Case;
 use FuzzPM::Network::Runner;
 use English qw(-no_match_vars);
 
+our $VERSION = '0.0.4';
+
 my $opts = FuzzPM::Component::CLI -> new();
 
 if ($opts -> {help} || !$opts -> {case}) {
-    print 'Usage: ' . $PROGRAM_NAME . " --case <file.yml> [--threads <num>]\n";
+    print "
+        \rFuzzPM v$VERSION
+        \rCore Commands
+        \r==============
+        \r\tCommand        Description
+        \r\t--------       -------------
+        \r\t--case         Define the use case of targets
+        \r\t--threads      Set the number of concurrent threads\n\n";
+    
 
     exit 0;
 }

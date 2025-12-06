@@ -4,9 +4,11 @@ package Mechanize {
     use Try::Tiny;
     use WWW::Mechanize;
 
+    our $VERSION = '0.0.1';
+
     sub new {
         my ($self, $payload) = @_;
-        
+
         try {
             my $mech = WWW::Mechanize->new();
             $mech->get($payload);
@@ -15,7 +17,7 @@ package Mechanize {
             return $uri->host if $uri && ref($uri);
             return $uri;
         }
-        
+
         catch {
             return 0;
         }

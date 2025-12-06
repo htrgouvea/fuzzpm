@@ -1,2 +1,5 @@
 .DS_Store
 *node_modules/
+*cover_db/
+*nytprof
+nytprof.out

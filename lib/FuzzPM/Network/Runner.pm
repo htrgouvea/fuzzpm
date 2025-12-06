@@ -84,7 +84,7 @@ package FuzzPM::Network::Runner {
                 foreach my $res (@module_results) {
                     if ($res -> {result} ne $first_output) {
                         $diverged = 1;
-                        
+
                         last;
                     }
                 }

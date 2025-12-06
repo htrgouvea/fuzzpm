@@ -5,6 +5,8 @@ package FuzzPM::Component::CLI {
     
     our $VERSION = '0.0.3';
 
+    our $VERSION = '0.0.4';
+
     sub new {
         my ($self, %opts) = @_;
 
