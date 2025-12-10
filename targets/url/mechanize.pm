@@ -14,13 +14,14 @@ package Mechanize {
             $mech->get($payload);
             my $uri = $mech->{uri};
 
-            return $uri->host if $uri && ref($uri);
+            return $uri->host if $uri && ref $uri;
             return $uri;
         }
-
         catch {
             return 0;
-        }
+        };
+
+        return;
     }
 }
 

@@ -1,9 +1,8 @@
-package Json_Parse {
+package JsonOn {
     use strict;
     use warnings;
-    use JSON::Parse qw(parse_json);
+    use JSON::ON;
     use Try::Tiny;
-    use JSON;
 
     our $VERSION = '0.0.1';
 
@@ -11,14 +10,16 @@ package Json_Parse {
         my ($self, $payload) = @_;
 
         try {
-            my $data = parse_json($payload);
+            my $json    = JSON::ON->new();
+            my $decoded = $json->decode($payload);
 
-            return JSON->new->canonical->encode($data);
+            return $decoded->get_ascii;
         }
-
         catch {
             return 0;
-        }
+        };
+
+        return;
     }
 }
 

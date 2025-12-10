@@ -1,8 +1,9 @@
-package Mojo_URI {
+package JsonParse {
     use strict;
     use warnings;
+    use JSON::Parse qw(parse_json);
     use Try::Tiny;
-    use Mojo::URL;
+    use JSON;
 
     our $VERSION = '0.0.1';
 
@@ -10,14 +11,15 @@ package Mojo_URI {
         my ($self, $payload) = @_;
 
         try {
-            my $url = Mojo::URL->new($payload);
+            my $data = parse_json($payload);
 
-            return $url->host;
+            return JSON->new->canonical->encode($data);
         }
-
         catch {
             return 0;
-        }
+        };
+
+        return;
     }
 }
 

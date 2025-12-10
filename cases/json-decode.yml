@@ -2,8 +2,8 @@ test:
     seeds:
         - seeds/json.txt
     targets:
-        - Json_On
-        - Json_Parse
+        - JsonOn
+        - JsonParse
         - Json
-        - Mojo_Json
+        - MojoJson
     target_folder: targets/json

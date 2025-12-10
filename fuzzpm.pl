@@ -13,15 +13,17 @@ our $VERSION = '0.0.4';
 my $opts = FuzzPM::Component::CLI -> new();
 
 if ($opts -> {help} || !$opts -> {case}) {
-    print "
-        \rFuzzPM v$VERSION
-        \rCore Commands
-        \r==============
-        \r\tCommand        Description
-        \r\t--------       -------------
-        \r\t--case         Define the use case of targets
-        \r\t--threads      Set the number of concurrent threads\n\n";
-    
+    print <<"END_HELP";
+
+        FuzzPM v$VERSION
+        Core Commands
+        ==============
+        	Command        Description
+        	--------       -------------
+        	--case         Define the use case of targets
+        	--threads      Set the number of concurrent threads
+
+END_HELP
 
     exit 0;
 }

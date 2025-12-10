@@ -1,8 +1,8 @@
-package Mojo_UA {
+package MojoUri {
     use strict;
     use warnings;
     use Try::Tiny;
-    use Mojo::UserAgent;
+    use Mojo::URL;
 
     our $VERSION = '0.0.1';
 
@@ -10,15 +10,15 @@ package Mojo_UA {
         my ($self, $payload) = @_;
 
         try {
-            my $ua = Mojo::UserAgent->new();
-            my $response = $ua->get($payload);
+            my $url = Mojo::URL->new($payload);
 
-            return $response->req->url->host;
+            return $url->host;
         }
-
         catch {
             return 0;
-        }
+        };
+
+        return;
     }
 }
 

@@ -1,8 +1,9 @@
-package Json_On {
+package MojoJson {
     use strict;
     use warnings;
-    use JSON::ON;
+    use Mojo::JSON ();
     use Try::Tiny;
+    use JSON;
 
     our $VERSION = '0.0.1';
 
@@ -10,15 +11,15 @@ package Json_On {
         my ($self, $payload) = @_;
 
         try {
-            my $json    = JSON::ON->new();
-            my $decoded = $json->decode($payload);
+            my $data = Mojo::JSON::decode_json($payload);
 
-            return $decoded->get_ascii;
+            return JSON->new->canonical->encode($data);
         }
-
         catch {
             return 0;
-        }
+        };
+
+        return;
     }
 }
 
