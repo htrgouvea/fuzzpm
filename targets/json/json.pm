@@ -15,10 +15,12 @@ package Json {
 
             return $json->encode($data);
         }
-
+        
         catch {
             return 0;
-        }
+        };
+
+        return;
     }
 }
 

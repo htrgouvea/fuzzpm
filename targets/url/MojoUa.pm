@@ -1,8 +1,8 @@
-package Json_On {
+package MojoUa {
     use strict;
     use warnings;
-    use JSON::ON;
     use Try::Tiny;
+    use Mojo::UserAgent;
 
     our $VERSION = '0.0.1';
 
@@ -10,15 +10,16 @@ package Json_On {
         my ($self, $payload) = @_;
 
         try {
-            my $json    = JSON::ON->new();
-            my $decoded = $json->decode($payload);
+            my $ua = Mojo::UserAgent->new();
+            my $response = $ua->get($payload);
 
-            return $decoded->get_ascii;
+            return $response->req->url->host;
         }
-
         catch {
             return 0;
-        }
+        };
+
+        return;
     }
 }
 

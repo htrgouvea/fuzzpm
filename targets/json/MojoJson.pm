@@ -1,4 +1,4 @@
-package Mojo_Json {
+package MojoJson {
     use strict;
     use warnings;
     use Mojo::JSON ();
@@ -15,10 +15,12 @@ package Mojo_Json {
 
             return JSON->new->canonical->encode($data);
         }
-
+        
         catch {
             return 0;
-        }
+        };
+
+        return;
     }
 }
 

@@ -14,10 +14,12 @@ package Email_Address {
 
             return @addresses ? lc($addresses[0]->address) : 0;
         }
-
+        
         catch {
             return 0;
-        }
+        };
+
+        return;
     }
 }
 

@@ -2,8 +2,8 @@ test:
     seeds:
         - seeds/urls.txt
     targets:
-        - Mojo_URI
-        - Mojo_UA
+        - MojoUri
+        - MojoUa
         - Mechanize
-        - Simple_URI
+        - SimpleUri
     target_folder: targets/url

@@ -25,7 +25,7 @@ package FuzzPM::Network::Runner {
         my $module_folder  = $test_case -> {target_folder} // 'targets';
 
         foreach my $module ( @{ $target_modules } ) {
-            my $module_path = "./$module_folder/" . lc($module) . '.pm';
+            my $module_path = "./$module_folder/" . $module . '.pm';
 
             require $module_path;
         }

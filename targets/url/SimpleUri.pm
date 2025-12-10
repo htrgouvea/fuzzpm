@@ -1,4 +1,4 @@
-package Simple_URI {
+package SimpleUri {
     use strict;
     use warnings;
     use URI;
@@ -14,10 +14,11 @@ package Simple_URI {
 
             return $uri->host;
         }
-
         catch {
             return 0;
-        }
+        };
+
+        return;
     }
 }
 
