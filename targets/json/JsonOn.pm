@@ -15,7 +15,7 @@ package JsonOn {
 
             return $decoded->get_ascii;
         }
-        
+
         catch {
             return 0;
         };

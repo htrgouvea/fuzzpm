@@ -15,7 +15,7 @@ package MojoJson {
 
             return JSON->new->canonical->encode($data);
         }
-        
+
         catch {
             return 0;
         };

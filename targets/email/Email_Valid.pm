@@ -14,7 +14,7 @@ package Email_Valid {
 
             return $address ? lc($address) : 0;
         }
-        
+
         catch {
             return 0;
         };
