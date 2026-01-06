@@ -12,21 +12,21 @@ package FuzzPM::Component::Mutator {
             's|seed=s' => \$seed
         );
 
-        if ($seed) {
-            my @chars = split qr//sm, $seed;
-
-            foreach my $i (0 .. $#chars) {
-                my $random = int rand @chars;
-                my $temp   = $chars[$i];
-
-                $chars[$i]      = $chars[$random];
-                $chars[$random] = $temp;
-            }
-
-            return join @chars;
+        if (!$seed || length($seed) == 0) {
+            return 0;
         }
 
-        return 0;
+        my @chars = split qr//sm, $seed;
+
+        foreach my $i (0 .. $#chars) {
+            my $random = int rand @chars;
+            my $temp   = $chars[$i];
+
+            $chars[$i]      = $chars[$random];
+            $chars[$random] = $temp;
+        }
+
+        return join q{}, @chars;
     }
 }
 

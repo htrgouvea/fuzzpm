@@ -16,9 +16,10 @@ package FuzzPM::Network::Runner {
     my $OUTPUT_LOCK : shared = 1;
 
     sub run {
-        my ($test_case, $num_threads) = @_;
+        my ($test_case, $num_threads, $mutate) = @_;
 
         $num_threads //= $DEFAULT_NUM_THREADS;
+        $mutate //= 0;
 
         my $seed_files     = $test_case -> {seeds};
         my $target_modules = $test_case -> {targets} || $test_case -> {libs};
@@ -48,7 +49,7 @@ package FuzzPM::Network::Runner {
         my @threads;
 
         for (1 .. $num_threads) {
-            push @threads, threads -> create(\&worker, $queue, $target_modules);
+            push @threads, threads -> create(\&worker, $queue, $target_modules, $mutate);
         }
 
         foreach my $thr (@threads) {
@@ -59,12 +60,28 @@ package FuzzPM::Network::Runner {
     }
 
     sub worker {
-        my ($queue, $target_modules) = @_;
+        my ($queue, $target_modules, $mutate) = @_;
 
         while (defined(my $line = $queue -> dequeue())) {
+            my $original_seed = $line;
+
+            if ($mutate) {
+                require FuzzPM::Component::Mutator;
+                my $mutated = FuzzPM::Component::Mutator->new($line);
+                if ($mutated && $mutated ne '0' && $mutated ne $line) {
+                    $line = $mutated;
+                } else {
+                    $line = $original_seed;
+                }
+            }
+
             {
                 lock($OUTPUT_LOCK);
-                print "[-] Seed\t-> $line\n";
+                if ($mutate && $line ne $original_seed) {
+                    print "[-] Seed\t-> $original_seed (mutated: $line)\n";
+                } else {
+                    print "[-] Seed\t-> $line\n";
+                }
             }
 
             my @module_results;
