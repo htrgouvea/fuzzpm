@@ -11,6 +11,7 @@ package FuzzPM::Component::CLI {
         GetOptions (
             'c|case=s'    => \$opts{case},
             'm|mutate'    => \$opts{mutate},
+            'M|mutate-times=i' => \$opts{mutate_times},
             'h|help'      => \$opts{help},
             't|threads=i' => \$opts{threads},
             's|show-matches' => \$opts{show_matches},

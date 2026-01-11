@@ -16,10 +16,14 @@ package FuzzPM::Network::Runner {
     my $OUTPUT_LOCK : shared = 1;
 
     sub run {
-        my ($test_case, $num_threads, $mutate, $show_matches) = @_;
+        my ($test_case, $num_threads, $mutate, $show_matches, $mutate_times) = @_;
 
         $num_threads //= $DEFAULT_NUM_THREADS;
+        if (defined $mutate_times && $mutate_times > 0) {
+            $mutate = 1;
+        }
         $mutate //= 0;
+        $mutate_times = $mutate ? ($mutate_times // 1) : 0;
         $show_matches //= 0;
 
         my $seed_files     = $test_case -> {seeds};
@@ -50,7 +54,14 @@ package FuzzPM::Network::Runner {
         my @threads;
 
         for (1 .. $num_threads) {
-            push @threads, threads -> create(\&worker, $queue, $target_modules, $mutate, $show_matches);
+            push @threads, threads -> create(
+                \&worker,
+                $queue,
+                $target_modules,
+                $mutate,
+                $show_matches,
+                $mutate_times
+            );
         }
 
         foreach my $thr (@threads) {
@@ -61,85 +72,101 @@ package FuzzPM::Network::Runner {
     }
 
     sub worker {
-        my ($queue, $target_modules, $mutate, $show_matches) = @_;
+        my ($queue, $target_modules, $mutate, $show_matches, $mutate_times) = @_;
 
         while (defined(my $line = $queue -> dequeue())) {
             my $original_seed = $line;
+            my @payloads = ($original_seed);
 
             if ($mutate) {
                 require FuzzPM::Component::Mutator;
-                my $mutated = FuzzPM::Component::Mutator->new($line);
-                if ($mutated && $mutated ne '0' && $mutated ne $line) {
-                    $line = $mutated;
-                } else {
-                    $line = $original_seed;
+                for my $index (1 .. $mutate_times) {
+                    my $mutated = _mutate_seed($original_seed);
+                    push @payloads, $mutated;
                 }
             }
 
-            {
-                lock($OUTPUT_LOCK);
-                if ($mutate && $line ne $original_seed) {
-                    print "[-] Seed\t-> $original_seed (mutated: $line)\n";
-                } else {
-                    print "[-] Seed\t-> $line\n";
-                }
-            }
+            for my $index (0 .. $#payloads) {
+                my $payload = $payloads[$index];
 
-            my @module_results;
-
-            foreach my $module ( @{ $target_modules } ) {
-                my $result = $module -> new($line);
-
-                push @module_results, {
-                    module  => $module,
-                    result  => $result,
-                    defined => defined $result,
-                };
-            }
-
-            if (@module_results > 1) {
-                my $first    = $module_results[0];
-                my $diverged = 0;
-
-                foreach my $res (@module_results) {
-                    if ($res->{defined} != $first->{defined}) {
-                        $diverged = 1;
-                        last;
-                    }
-                    if ($res->{defined} && $res->{result} ne $first->{result}) {
-                        $diverged = 1;
-                        last;
-                    }
-                }
-
-                if ($diverged) {
+                {
                     lock($OUTPUT_LOCK);
+                    if ($index == 0) {
+                        print "[-] Seed\t-> $payload\n";
+                    } else {
+                        print "[!] Mutated\t($index/$mutate_times): $payload\n";
+                    }
+                }
+
+                my @module_results;
+
+                foreach my $module ( @{ $target_modules } ) {
+                    my $result = $module -> new($payload);
+
+                    push @module_results, {
+                        module  => $module,
+                        result  => $result,
+                        defined => defined $result,
+                    };
+                }
+
+                if (@module_results > 1) {
+                    my $first    = $module_results[0];
+                    my $diverged = 0;
 
                     foreach my $res (@module_results) {
-                        my $display = $res->{defined} ? $res->{result} : '<undef>';
-                        print '[+] ' . $res->{module} . "\t" . $display . "\n";
+                        if ($res->{defined} != $first->{defined}) {
+                            $diverged = 1;
+                            last;
+                        }
+                        if ($res->{defined} && $res->{result} ne $first->{result}) {
+                            $diverged = 1;
+                            last;
+                        }
                     }
 
-                    print "\n";
-                } elsif ($show_matches) {
+                    if ($diverged) {
+                        lock($OUTPUT_LOCK);
+
+                        foreach my $res (@module_results) {
+                            my $display = $res->{defined} ? $res->{result} : '<undef>';
+                            print '[+] ' . $res->{module} . "\t" . $display . "\n";
+                        }
+
+                        print "\n";
+                    } elsif ($show_matches) {
+                        lock($OUTPUT_LOCK);
+
+                        foreach my $res (@module_results) {
+                            my $display = $res->{defined} ? $res->{result} : '<undef>';
+                            print '[=] ' . $res->{module} . "\t" . $display . "\n";
+                        }
+
+                        print "\n";
+                    }
+                } elsif ($show_matches && @module_results == 1) {
                     lock($OUTPUT_LOCK);
 
-                    foreach my $res (@module_results) {
-                        my $display = $res->{defined} ? $res->{result} : '<undef>';
-                        print '[=] ' . $res->{module} . "\t" . $display . "\n";
-                    }
-
-                    print "\n";
+                    my $res = $module_results[0];
+                    my $display = $res->{defined} ? $res->{result} : '<undef>';
+                    print '[=] ' . $res->{module} . "\t" . $display . "\n\n";
                 }
-            } elsif ($show_matches && @module_results == 1) {
-                lock($OUTPUT_LOCK);
-
-                my $res = $module_results[0];
-                my $display = $res->{defined} ? $res->{result} : '<undef>';
-                print '[=] ' . $res->{module} . "\t" . $display . "\n\n";
             }
         }
         return;
+    }
+
+    sub _mutate_seed {
+        my ($seed) = @_;
+
+        for (1 .. 5) {
+            my $mutated = FuzzPM::Component::Mutator->new($seed);
+            if ($mutated && $mutated ne '0' && $mutated ne $seed) {
+                return $mutated;
+            }
+        }
+
+        return $seed;
     }
 
     return 1;
