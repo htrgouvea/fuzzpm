@@ -9,18 +9,18 @@ package Json {
     sub new {
         my ($self, $payload) = @_;
 
-        try {
+        my $result = try {
             my $json = JSON->new->canonical;
             my $data = $json->decode($payload);
 
-            return $json->encode($data);
+            $json->encode($data);
         }
 
         catch {
-            return 0;
+            0;
         };
 
-        return;
+        return $result;
     }
 }
 

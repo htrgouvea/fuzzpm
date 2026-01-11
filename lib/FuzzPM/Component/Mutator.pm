@@ -3,8 +3,12 @@ package FuzzPM::Component::Mutator {
     use warnings;
     use bytes;
     use Getopt::Long;
+    use Readonly;
 
     our $VERSION = '0.0.4';
+    Readonly my $BYTE_BITS        => 8;
+    Readonly my $BYTE_RANGE       => 256;
+    Readonly my $MAX_SPLICE_CHUNK => 8;
 
     sub new {
         my ($self, $seed) = @_;
@@ -13,7 +17,7 @@ package FuzzPM::Component::Mutator {
             's|seed=s' => \$seed
         );
 
-        if (!defined $seed || length($seed) == 0) {
+        if (!defined $seed || length $seed == 0) {
             return 0;
         }
 
@@ -29,7 +33,7 @@ package FuzzPM::Component::Mutator {
         if ($op eq 'bit_flip') {
             my @bytes = unpack 'C*', $seed;
             my $index = int rand @bytes;
-            my $bit   = 1 << int rand 8;
+            my $bit   = 1 << int rand $BYTE_BITS;
 
             $bytes[$index] ^= $bit;
 
@@ -40,7 +44,7 @@ package FuzzPM::Component::Mutator {
             my @bytes = unpack 'C*', $seed;
             my $index = int rand @bytes;
 
-            $bytes[$index] = int rand 256;
+            $bytes[$index] = int rand $BYTE_RANGE;
 
             return pack 'C*', @bytes;
         }
@@ -48,7 +52,7 @@ package FuzzPM::Component::Mutator {
         if ($op eq 'byte_insert') {
             my @bytes = unpack 'C*', $seed;
             my $index = int rand(@bytes + 1);
-            my $byte  = int rand 256;
+            my $byte  = int rand $BYTE_RANGE;
 
             splice @bytes, $index, 0, $byte;
 
@@ -72,7 +76,7 @@ package FuzzPM::Component::Mutator {
 
             return $seed if $count <= 1;
 
-            my $max_chunk  = $count < 8 ? $count : 8;
+            my $max_chunk  = $count < $MAX_SPLICE_CHUNK ? $count : $MAX_SPLICE_CHUNK;
             my $chunk_len  = 1 + int rand $max_chunk;
             my $start      = int rand($count - $chunk_len + 1);
             my @chunk      = splice @bytes, $start, $chunk_len;
@@ -85,36 +89,40 @@ package FuzzPM::Component::Mutator {
 
         if ($op eq 'token_insert') {
             my @tokens = (
-                "\x00",
+                chr 0,
                 "\n",
                 "\r\n",
                 'A',
                 'AAAA',
                 '0',
                 '1',
-                '../',
-                '..\\',
-                '%s',
-                '%n',
+                q{../},
+                q{..\\},
+                q{%s},
+                q{%n},
                 q{"},
                 q{'},
-                '<',
-                '>',
-                '(',
-                ')',
-                '{',
-                '}',
-                '[',
-                ']',
+                q{<},
+                q{>},
+                q{(},
+                q{)},
+                q[{],
+                q[}],
+                q{[},
+                q{]},
                 q{\\},
-                '/',
-                ' ',
+                q{/},
+                q{ },
             );
 
-            my $token = $tokens[int rand @tokens];
-            my $pos   = int rand(length($seed) + 1);
+            my $token    = $tokens[int rand @tokens];
+            my $seed_len = length $seed;
+            my $pos      = int rand ($seed_len + 1);
 
-            return substr($seed, 0, $pos) . $token . substr($seed, $pos);
+            my $prefix = substr $seed, 0, $pos;
+            my $suffix = substr $seed, $pos;
+
+            return $prefix . $token . $suffix;
         }
 
         return $seed;

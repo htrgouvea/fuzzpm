@@ -9,16 +9,16 @@ package SimpleUri {
     sub new {
         my ($self, $payload) = @_;
 
-        try {
+        my $result = try {
             my $uri = URI->new($payload);
 
-            return $uri->host;
+            $uri->host;
         }
         catch {
-            return 0;
+            0;
         };
 
-        return;
+        return $result;
     }
 }
 

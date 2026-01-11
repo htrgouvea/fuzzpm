@@ -10,17 +10,17 @@ package JsonParse {
     sub new {
         my ($self, $payload) = @_;
 
-        try {
+        my $result = try {
             my $data = parse_json($payload);
 
-            return JSON->new->canonical->encode($data);
+            JSON->new->canonical->encode($data);
         }
 
         catch {
-            return 0;
+            0;
         };
 
-        return;
+        return $result;
     }
 }
 

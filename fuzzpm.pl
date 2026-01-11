@@ -23,6 +23,7 @@ if ($opts -> {help} || !$opts -> {case}) {
         	--case         Define the use case of targets
         	--threads      Set the number of concurrent threads
         	--mutate       Enable seed mutation (shuffles characters)
+        	--show-matches Print target output even when they agree
 
 END_HELP
 
@@ -31,4 +32,9 @@ END_HELP
 
 my $case_data = FuzzPM::Component::Case -> new ($opts -> {case});
 
-FuzzPM::Network::Runner::run($case_data, $opts -> {threads}, $opts -> {mutate});
+FuzzPM::Network::Runner::run(
+    $case_data,
+    $opts -> {threads},
+    $opts -> {mutate},
+    $opts -> {show_matches},
+);

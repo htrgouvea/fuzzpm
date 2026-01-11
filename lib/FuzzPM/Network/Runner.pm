@@ -16,10 +16,11 @@ package FuzzPM::Network::Runner {
     my $OUTPUT_LOCK : shared = 1;
 
     sub run {
-        my ($test_case, $num_threads, $mutate) = @_;
+        my ($test_case, $num_threads, $mutate, $show_matches) = @_;
 
         $num_threads //= $DEFAULT_NUM_THREADS;
         $mutate //= 0;
+        $show_matches //= 0;
 
         my $seed_files     = $test_case -> {seeds};
         my $target_modules = $test_case -> {targets} || $test_case -> {libs};
@@ -49,7 +50,7 @@ package FuzzPM::Network::Runner {
         my @threads;
 
         for (1 .. $num_threads) {
-            push @threads, threads -> create(\&worker, $queue, $target_modules, $mutate);
+            push @threads, threads -> create(\&worker, $queue, $target_modules, $mutate, $show_matches);
         }
 
         foreach my $thr (@threads) {
@@ -60,7 +61,7 @@ package FuzzPM::Network::Runner {
     }
 
     sub worker {
-        my ($queue, $target_modules, $mutate) = @_;
+        my ($queue, $target_modules, $mutate, $show_matches) = @_;
 
         while (defined(my $line = $queue -> dequeue())) {
             my $original_seed = $line;
@@ -89,19 +90,24 @@ package FuzzPM::Network::Runner {
             foreach my $module ( @{ $target_modules } ) {
                 my $result = $module -> new($line);
 
-                if (defined $result && $result) {
-                    push @module_results, { module => $module, result => $result };
-                }
+                push @module_results, {
+                    module  => $module,
+                    result  => $result,
+                    defined => defined $result,
+                };
             }
 
             if (@module_results > 1) {
-                my $first_output = $module_results[0] -> {result};
-                my $diverged     = 0;
+                my $first    = $module_results[0];
+                my $diverged = 0;
 
                 foreach my $res (@module_results) {
-                    if ($res -> {result} ne $first_output) {
+                    if ($res->{defined} != $first->{defined}) {
                         $diverged = 1;
-
+                        last;
+                    }
+                    if ($res->{defined} && $res->{result} ne $first->{result}) {
+                        $diverged = 1;
                         last;
                     }
                 }
@@ -110,11 +116,27 @@ package FuzzPM::Network::Runner {
                     lock($OUTPUT_LOCK);
 
                     foreach my $res (@module_results) {
-                        print '[+] ' . $res -> {module} . "\t" . $res -> {result} . "\n";
+                        my $display = $res->{defined} ? $res->{result} : '<undef>';
+                        print '[+] ' . $res->{module} . "\t" . $display . "\n";
+                    }
+
+                    print "\n";
+                } elsif ($show_matches) {
+                    lock($OUTPUT_LOCK);
+
+                    foreach my $res (@module_results) {
+                        my $display = $res->{defined} ? $res->{result} : '<undef>';
+                        print '[=] ' . $res->{module} . "\t" . $display . "\n";
                     }
 
                     print "\n";
                 }
+            } elsif ($show_matches && @module_results == 1) {
+                lock($OUTPUT_LOCK);
+
+                my $res = $module_results[0];
+                my $display = $res->{defined} ? $res->{result} : '<undef>';
+                print '[=] ' . $res->{module} . "\t" . $display . "\n\n";
             }
         }
         return;

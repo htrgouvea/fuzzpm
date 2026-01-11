@@ -9,16 +9,16 @@ package MojoUri {
     sub new {
         my ($self, $payload) = @_;
 
-        try {
+        my $result = try {
             my $url = Mojo::URL->new($payload);
 
-            return $url->host;
+            $url->host;
         }
         catch {
-            return 0;
+            0;
         };
 
-        return;
+        return $result;
     }
 }
 

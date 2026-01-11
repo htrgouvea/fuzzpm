@@ -13,6 +13,7 @@ package FuzzPM::Component::CLI {
             'm|mutate'    => \$opts{mutate},
             'h|help'      => \$opts{help},
             't|threads=i' => \$opts{threads},
+            's|show-matches' => \$opts{show_matches},
         );
 
         return \%opts;

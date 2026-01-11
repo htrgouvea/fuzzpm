@@ -9,17 +9,17 @@ package Email_Valid {
     sub new {
         my ($self, $payload) = @_;
 
-        try {
+        my $result = try {
             my $address = Email::Valid->address($payload);
 
-            return $address ? lc($address) : 0;
+            $address ? lc($address) : 0;
         }
 
         catch {
-            return 0;
+            0;
         };
 
-        return;
+        return $result;
     }
 }
 

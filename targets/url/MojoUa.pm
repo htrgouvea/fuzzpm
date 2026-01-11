@@ -9,17 +9,17 @@ package MojoUa {
     sub new {
         my ($self, $payload) = @_;
 
-        try {
+        my $result = try {
             my $ua = Mojo::UserAgent->new();
-            my $response = $ua->get($payload);
+            my $tx = $ua->build_tx(GET => $payload);
 
-            return $response->req->url->host;
+            $tx->req->url->host;
         }
         catch {
-            return 0;
+            0;
         };
 
-        return;
+        return $result;
     }
 }
 

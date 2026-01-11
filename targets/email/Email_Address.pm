@@ -9,17 +9,17 @@ package Email_Address {
     sub new {
         my ($self, $payload) = @_;
 
-        try {
+        my $result = try {
             my @addresses = Email::Address->parse($payload);
 
-            return @addresses ? lc($addresses[0]->address) : 0;
+            @addresses ? lc($addresses[0]->address) : 0;
         }
 
         catch {
-            return 0;
+            0;
         };
 
-        return;
+        return $result;
     }
 }
 
