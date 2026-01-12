@@ -62,7 +62,9 @@ package FuzzPM::Component::Mutator {
         if ($op eq 'byte_delete') {
             my @bytes = unpack 'C*', $seed;
 
-            return $seed if @bytes <= 1;
+            if (@bytes <= 1) {
+                return $seed;
+            }
 
             my $index = int rand @bytes;
             splice @bytes, $index, 1;
@@ -74,9 +76,14 @@ package FuzzPM::Component::Mutator {
             my @bytes = unpack 'C*', $seed;
             my $count = @bytes;
 
-            return $seed if $count <= 1;
+            if ($count <= 1) {
+                return $seed;
+            }
 
-            my $max_chunk  = $count < $MAX_SPLICE_CHUNK ? $count : $MAX_SPLICE_CHUNK;
+            my $max_chunk = $MAX_SPLICE_CHUNK;
+            if ($count < $MAX_SPLICE_CHUNK) {
+                $max_chunk = $count;
+            }
             my $chunk_len  = 1 + int rand $max_chunk;
             my $start      = int rand($count - $chunk_len + 1);
             my @chunk      = splice @bytes, $start, $chunk_len;

@@ -10,9 +10,11 @@ package Email_Address {
         my ($self, $payload) = @_;
 
         my $result = try {
-            my @addresses = Email::Address->parse($payload);
-
-            @addresses ? lc($addresses[0]->address) : 0;
+            my @addresses = Email::Address -> parse($payload);
+            if (@addresses) {
+                return lc($addresses[0] -> address);
+            }
+            return 0;
         }
 
         catch {

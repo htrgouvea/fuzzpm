@@ -23,7 +23,14 @@ package FuzzPM::Network::Runner {
             $mutate = 1;
         }
         $mutate //= 0;
-        $mutate_times = $mutate ? ($mutate_times // 1) : 0;
+        if ($mutate) {
+            if (!defined $mutate_times || $mutate_times < 1) {
+                $mutate_times = 1;
+            }
+        }
+        if (!$mutate) {
+            $mutate_times = 0;
+        }
         $show_matches //= 0;
 
         my $seed_files     = $test_case -> {seeds};
@@ -93,7 +100,8 @@ package FuzzPM::Network::Runner {
                     lock($OUTPUT_LOCK);
                     if ($index == 0) {
                         print "[-] Seed\t-> $payload\n";
-                    } else {
+                    }
+                    if ($index != 0) {
                         print "[!] Mutated\t($index/$mutate_times): $payload\n";
                     }
                 }
@@ -115,11 +123,11 @@ package FuzzPM::Network::Runner {
                     my $diverged = 0;
 
                     foreach my $res (@module_results) {
-                        if ($res->{defined} != $first->{defined}) {
+                        if ($res -> {defined} != $first -> {defined}) {
                             $diverged = 1;
                             last;
                         }
-                        if ($res->{defined} && $res->{result} ne $first->{result}) {
+                        if ($res -> {defined} && $res -> {result} ne $first -> {result}) {
                             $diverged = 1;
                             last;
                         }
@@ -129,27 +137,38 @@ package FuzzPM::Network::Runner {
                         lock($OUTPUT_LOCK);
 
                         foreach my $res (@module_results) {
-                            my $display = $res->{defined} ? $res->{result} : '<undef>';
-                            print '[+] ' . $res->{module} . "\t" . $display . "\n";
-                        }
-
-                        print "\n";
-                    } elsif ($show_matches) {
-                        lock($OUTPUT_LOCK);
-
-                        foreach my $res (@module_results) {
-                            my $display = $res->{defined} ? $res->{result} : '<undef>';
-                            print '[=] ' . $res->{module} . "\t" . $display . "\n";
+                            my $display = '<undef>';
+                            if ($res -> {defined}) {
+                                $display = $res -> {result};
+                            }
+                            print '[+] ' . $res -> {module} . "\t" . $display . "\n";
                         }
 
                         print "\n";
                     }
-                } elsif ($show_matches && @module_results == 1) {
+                    if (!$diverged && $show_matches) {
+                        lock($OUTPUT_LOCK);
+
+                        foreach my $res (@module_results) {
+                            my $display = '<undef>';
+                            if ($res -> {defined}) {
+                                $display = $res -> {result};
+                            }
+                            print '[=] ' . $res -> {module} . "\t" . $display . "\n";
+                        }
+
+                        print "\n";
+                    }
+                }
+                if ($show_matches && @module_results == 1) {
                     lock($OUTPUT_LOCK);
 
                     my $res = $module_results[0];
-                    my $display = $res->{defined} ? $res->{result} : '<undef>';
-                    print '[=] ' . $res->{module} . "\t" . $display . "\n\n";
+                    my $display = '<undef>';
+                    if ($res -> {defined}) {
+                        $display = $res -> {result};
+                    }
+                    print '[=] ' . $res -> {module} . "\t" . $display . "\n\n";
                 }
             }
         }
@@ -160,7 +179,7 @@ package FuzzPM::Network::Runner {
         my ($seed) = @_;
 
         for (1 .. 5) {
-            my $mutated = FuzzPM::Component::Mutator->new($seed);
+            my $mutated = FuzzPM::Component::Mutator -> new($seed);
             if ($mutated && $mutated ne '0' && $mutated ne $seed) {
                 return $mutated;
             }
