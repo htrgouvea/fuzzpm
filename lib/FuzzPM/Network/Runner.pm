@@ -24,7 +24,7 @@ package FuzzPM::Network::Runner {
         }
         $mutate //= 0;
         if ($mutate) {
-            if (!defined $mutate_times || $mutate_times < 1) {
+            if (!defined $mutate_times) {
                 $mutate_times = 1;
             }
         }
