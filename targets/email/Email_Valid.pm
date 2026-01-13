@@ -10,9 +10,11 @@ package Email_Valid {
         my ($self, $payload) = @_;
 
         my $result = try {
-            my $address = Email::Valid->address($payload);
-
-            $address ? lc($address) : 0;
+            my $address = Email::Valid -> address($payload);
+            if ($address) {
+                return lc($address);
+            }
+            return 0;
         }
 
         catch {
