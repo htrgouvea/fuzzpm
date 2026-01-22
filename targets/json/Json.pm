@@ -7,13 +7,13 @@ package Json {
     our $VERSION = '0.0.1';
 
     sub new {
-        my ($self, $payload) = @_;
+        my ($class, $payload) = @_;
 
         my $result = try {
-            my $json = JSON->new->canonical;
-            my $data = $json->decode($payload);
+            my $json_codec = JSON -> new() -> canonical;
+            my $decoded_data = $json_codec -> decode($payload);
 
-            $json->encode($data);
+            $json_codec -> encode($decoded_data);
         }
 
         catch {

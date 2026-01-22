@@ -7,12 +7,12 @@ package Email_Valid {
     our $VERSION = '0.0.1';
 
     sub new {
-        my ($self, $payload) = @_;
+        my ($class, $payload) = @_;
 
         my $result = try {
-            my $address = Email::Valid -> address($payload);
-            if ($address) {
-                return lc($address);
+            my $validated_address = Email::Valid -> address($payload);
+            if ($validated_address) {
+                return lc($validated_address);
             }
             return 0;
         }

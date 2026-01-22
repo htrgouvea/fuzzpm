@@ -7,12 +7,12 @@ package MojoUri {
     our $VERSION = '0.0.1';
 
     sub new {
-        my ($self, $payload) = @_;
+        my ($class, $payload) = @_;
 
         my $result = try {
-            my $url = Mojo::URL->new($payload);
+            my $url = Mojo::URL -> new($payload);
 
-            $url->host;
+            $url -> host;
         }
         catch {
             0;

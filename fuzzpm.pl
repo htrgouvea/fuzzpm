@@ -10,9 +10,9 @@ use English qw(-no_match_vars);
 
 our $VERSION = '0.0.4';
 
-my $opts = FuzzPM::Component::CLI -> new();
+my $cli_options = FuzzPM::Component::CLI -> new();
 
-if ($opts -> {help} || !$opts -> {case}) {
+if ($cli_options -> {help} || !$cli_options -> {case}) {
     print <<"END_HELP";
 
         FuzzPM v$VERSION
@@ -31,12 +31,12 @@ END_HELP
     exit 0;
 }
 
-my $case_data = FuzzPM::Component::Case -> new ($opts -> {case});
+my $case_data = FuzzPM::Component::Case -> new($cli_options -> {case});
 
 FuzzPM::Network::Runner::run(
     $case_data,
-    $opts -> {threads},
-    $opts -> {mutate},
-    $opts -> {show_matches},
-    $opts -> {mutate_times},
+    $cli_options -> {threads},
+    $cli_options -> {mutate},
+    $cli_options -> {show_matches},
+    $cli_options -> {mutate_times},
 );

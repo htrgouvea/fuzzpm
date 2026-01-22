@@ -7,12 +7,12 @@ package SimpleUri {
     our $VERSION = '0.0.1';
 
     sub new {
-        my ($self, $payload) = @_;
+        my ($class, $payload) = @_;
 
         my $result = try {
-            my $uri = URI->new($payload);
+            my $uri = URI -> new($payload);
 
-            $uri->host;
+            $uri -> host;
         }
         catch {
             0;

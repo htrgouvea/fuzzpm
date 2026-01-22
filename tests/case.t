@@ -12,9 +12,9 @@ use FuzzPM::Component::Case;
 
 our $VERSION = '0.0.1';
 
-my ($fh, $filename) = tempfile(SUFFIX => '.yml');
+my ($file_handle, $filename) = tempfile(SUFFIX => '.yml');
 
-print {$fh} <<"EOF";
+print {$file_handle} <<"EOF";
 test:
   seeds:
     - seeds/test.txt
@@ -22,14 +22,14 @@ test:
     - DummyModule
   target_folder: targets/dummy
 EOF
-close $fh or croak 'Could not close filehandle: ' . $OS_ERROR;
+close $file_handle or croak 'Could not close filehandle: ' . $OS_ERROR;
 
 local @ARGV = ('--case', $filename);
 
-my $case = FuzzPM::Component::Case -> new();
+my $case_data = FuzzPM::Component::Case -> new();
 
 is_deeply(
-    $case,
+    $case_data,
     {
         seeds         => ['seeds/test.txt'],
         targets       => ['DummyModule'],

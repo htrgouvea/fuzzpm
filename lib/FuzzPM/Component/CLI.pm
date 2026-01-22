@@ -6,18 +6,18 @@ package FuzzPM::Component::CLI {
     our $VERSION = '0.0.4';
 
     sub new {
-        my ($self, %opts) = @_;
+        my ($class, %options) = @_;
 
         GetOptions (
-            'c|case=s'    => \$opts{case},
-            'm|mutate'    => \$opts{mutate},
-            'M|mutate-times=i' => \$opts{mutate_times},
-            'h|help'      => \$opts{help},
-            't|threads=i' => \$opts{threads},
-            's|show-matches' => \$opts{show_matches},
+            'c|case=s'    => \$options{case},
+            'm|mutate'    => \$options{mutate},
+            'M|mutate-times=i' => \$options{mutate_times},
+            'h|help'      => \$options{help},
+            't|threads=i' => \$options{threads},
+            's|show-matches' => \$options{show_matches},
         );
 
-        return \%opts;
+        return \%options;
     }
 }
 
