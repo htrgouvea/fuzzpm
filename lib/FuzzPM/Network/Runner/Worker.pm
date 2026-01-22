@@ -6,7 +6,7 @@ package FuzzPM::Network::Runner::Worker {
     our $VERSION = '0.0.1';
 
     sub new {
-        my ($self, $help) = @_;
+        my ($class, $help) = @_;
 
         GetOptions (
             'h|help=s' => \$help

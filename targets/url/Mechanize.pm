@@ -8,13 +8,15 @@ package Mechanize {
     our $VERSION = '0.0.1';
 
     sub new {
-        my ($self, $payload) = @_;
+        my ($class, $payload) = @_;
 
         my $result = try {
-            my $request = HTTP::Request->new(GET => $payload);
-            my $uri = $request->uri;
+            my $request = HTTP::Request -> new(GET => $payload);
+            my $uri = $request -> uri;
 
-            return $uri->host if $uri && ref $uri;
+            if ($uri && ref $uri) {
+                return $uri -> host;
+            }
             return $uri;
         }
         catch {

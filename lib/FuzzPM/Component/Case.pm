@@ -9,14 +9,14 @@ package FuzzPM::Component::Case {
     our $VERSION = '0.0.3';
 
     sub new {
-        my ($self, $file) = @_;
+        my ($class, $case_file) = @_;
 
         GetOptions (
-            'c|case=s' => \$file
+            'c|case=s' => \$case_file
         );
 
-        if ($file) {
-             my $yaml = YAML::Tiny -> read($file) or croak "Error reading file $file: $OS_ERROR";
+        if ($case_file) {
+            my $yaml = YAML::Tiny -> read($case_file) or croak "Error reading file $case_file: $OS_ERROR";
 
             return $yaml -> [0] -> {test};
         }

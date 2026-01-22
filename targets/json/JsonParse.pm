@@ -8,12 +8,12 @@ package JsonParse {
     our $VERSION = '0.0.1';
 
     sub new {
-        my ($self, $payload) = @_;
+        my ($class, $payload) = @_;
 
         my $result = try {
-            my $data = parse_json($payload);
+            my $decoded_data = parse_json($payload);
 
-            JSON->new->canonical->encode($data);
+            JSON -> new() -> canonical -> encode($decoded_data);
         }
 
         catch {

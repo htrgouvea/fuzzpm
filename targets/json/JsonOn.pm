@@ -7,13 +7,13 @@ package JsonOn {
     our $VERSION = '0.0.1';
 
     sub new {
-        my ($self, $payload) = @_;
+        my ($class, $payload) = @_;
 
         my $result = try {
-            my $json    = JSON::ON->new();
-            my $decoded = $json->decode($payload);
+            my $json_decoder = JSON::ON -> new();
+            my $decoded_data = $json_decoder -> decode($payload);
 
-            $decoded->get_ascii;
+            $decoded_data -> get_ascii;
         }
 
         catch {

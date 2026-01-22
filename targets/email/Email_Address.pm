@@ -7,7 +7,7 @@ package Email_Address {
     our $VERSION = '0.0.1';
 
     sub new {
-        my ($self, $payload) = @_;
+        my ($class, $payload) = @_;
 
         my $result = try {
             my @addresses = Email::Address -> parse($payload);
