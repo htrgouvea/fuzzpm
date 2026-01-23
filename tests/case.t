@@ -14,7 +14,7 @@ our $VERSION = '0.0.1';
 
 my ($file_handle, $filename) = tempfile(SUFFIX => '.yml');
 
-print {$file_handle} <<"EOF";
+print {$file_handle} <<'EOF';
 test:
   seeds:
     - seeds/test.txt
