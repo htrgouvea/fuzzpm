@@ -6,4 +6,4 @@ severity = 1
 
 [InputOutput::RequireCheckedSyscalls]
 functions = :builtins
-exclude_functions = print
+exclude_functions = print say
