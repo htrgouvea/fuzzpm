@@ -2,7 +2,8 @@
 
 use strict;
 use warnings;
-use Test::More tests => 3;
+use constant TEST_COUNT => 3;
+use Test::More tests => TEST_COUNT;
 use FindBin;
 use lib "$FindBin::Bin/../lib";
 use FuzzPM::Component::CLI;
