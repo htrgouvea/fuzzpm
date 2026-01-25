@@ -21,10 +21,10 @@ package FuzzPM::Component::Mutator {
             return 0;
         }
 
-        my $seed_length = length $seed;
+        my $initial_seed_length = length $seed;
         my @operations = qw(bit_flip byte_overwrite byte_insert token_insert splice byte_delete);
 
-        if ($seed_length <= 1) {
+        if ($initial_seed_length <= 1) {
             @operations = grep { $_ ne 'byte_delete' && $_ ne 'splice' } @operations;
         }
 
@@ -123,8 +123,8 @@ package FuzzPM::Component::Mutator {
             );
 
             my $token = $tokens[int rand @tokens];
-            my $seed_length_for_insert = length $seed;
-            my $insert_position = int rand ($seed_length_for_insert + 1);
+            my $insert_seed_length = length $seed;
+            my $insert_position = int rand($insert_seed_length + 1);
 
             my $prefix = substr $seed, 0, $insert_position;
             my $suffix = substr $seed, $insert_position;

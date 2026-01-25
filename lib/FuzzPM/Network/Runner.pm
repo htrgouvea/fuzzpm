@@ -12,6 +12,7 @@ package FuzzPM::Network::Runner {
     our $VERSION = '0.0.1';
 
     Readonly my $DEFAULT_NUM_THREADS => 4;
+    Readonly my $MAX_MUTATION_ATTEMPTS => 5;
 
     my $OUTPUT_LOCK : shared = 1;
 
@@ -178,7 +179,7 @@ package FuzzPM::Network::Runner {
     sub _mutate_seed {
         my ($seed) = @_;
 
-        for (1 .. 5) {
+        for (1 .. $MAX_MUTATION_ATTEMPTS) {
             my $mutated = FuzzPM::Component::Mutator -> new($seed);
             if ($mutated && $mutated ne '0' && $mutated ne $seed) {
                 return $mutated;
