@@ -13,6 +13,8 @@ package FuzzPM::Network::Runner {
 
     Readonly my $DEFAULT_NUM_THREADS => 4;
     Readonly my $MAX_MUTATION_ATTEMPTS => 5;
+    Readonly my $DIVERGED_TAG => q{+};
+    Readonly my $MATCH_TAG => q{=};
 
     my $OUTPUT_LOCK : shared = 1;
 
@@ -120,56 +122,17 @@ package FuzzPM::Network::Runner {
                 }
 
                 if (@module_results > 1) {
-                    my $first_result = $module_results[0];
-                    my $diverged = 0;
-
-                    foreach my $module_result (@module_results) {
-                        if ($module_result -> {defined} != $first_result -> {defined}) {
-                            $diverged = 1;
-                            last;
-                        }
-                        if ($module_result -> {defined} && $module_result -> {result} ne $first_result -> {result}) {
-                            $diverged = 1;
-                            last;
-                        }
-                    }
-
+                    my $diverged = _results_diverged(\@module_results);
                     if ($diverged) {
                         lock($OUTPUT_LOCK);
-
-                        foreach my $module_result (@module_results) {
-                            my $display = '<undef>';
-                            if ($module_result -> {defined}) {
-                                $display = $module_result -> {result};
-                            }
-                            print '[+] ' . $module_result -> {module} . "\t" . $display . "\n";
-                        }
-
-                        print "\n";
-                    }
-                    if (!$diverged && $show_matches) {
+                        _print_module_results($DIVERGED_TAG, \@module_results);
+                    } elsif ($show_matches) {
                         lock($OUTPUT_LOCK);
-
-                        foreach my $module_result (@module_results) {
-                            my $display = '<undef>';
-                            if ($module_result -> {defined}) {
-                                $display = $module_result -> {result};
-                            }
-                            print '[=] ' . $module_result -> {module} . "\t" . $display . "\n";
-                        }
-
-                        print "\n";
+                        _print_module_results($MATCH_TAG, \@module_results);
                     }
-                }
-                if ($show_matches && @module_results == 1) {
+                } elsif ($show_matches) {
                     lock($OUTPUT_LOCK);
-
-                    my $module_result = $module_results[0];
-                    my $display = '<undef>';
-                    if ($module_result -> {defined}) {
-                        $display = $module_result -> {result};
-                    }
-                    print '[=] ' . $module_result -> {module} . "\t" . $display . "\n\n";
+                    _print_module_results($MATCH_TAG, \@module_results);
                 }
             }
         }
@@ -187,6 +150,34 @@ package FuzzPM::Network::Runner {
         }
 
         return $seed;
+    }
+
+    sub _results_diverged {
+        my ($module_results) = @_;
+        my $first_result = $module_results -> [0];
+
+        foreach my $module_result (@{ $module_results }) {
+            if ($module_result -> {defined} != $first_result -> {defined}) {
+                return 1;
+            }
+            if ($module_result -> {defined} && $module_result -> {result} ne $first_result -> {result}) {
+                return 1;
+            }
+        }
+
+        return 0;
+    }
+
+    sub _print_module_results {
+        my ($tag, $module_results) = @_;
+
+        foreach my $module_result (@{ $module_results }) {
+            my $display = $module_result -> {defined} ? $module_result -> {result} : '<undef>';
+            print "[$tag] " . $module_result -> {module} . "\t" . $display . "\n";
+        }
+
+        print "\n";
+        return;
     }
 
     return 1;
