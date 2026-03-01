@@ -5,6 +5,6 @@ requires 'Readonly';
 requires 'Try::Tiny';
 
 on 'test' => sub {
-    requires 'File::Temp',          '0.2311';
+    requires 'File::Temp', '0.2312';
     requires 'FindBin',             '1.54';
 }
