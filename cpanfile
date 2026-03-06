@@ -1,10 +1,10 @@
 requires 'YAML::Tiny',      '1.76';
 requires 'List::MoreUtils', '0.430';
 requires 'Getopt::Long',    '2.58';
-requires 'Readonly';
-requires 'Try::Tiny';
+requires 'Readonly', '2.05';
+requires 'Try::Tiny', '0.32';
 
 on 'test' => sub {
-    requires 'File::Temp',          '0.2311';
+    requires 'File::Temp', '0.2312';
     requires 'FindBin',             '1.54';
 }
