@@ -117,19 +117,28 @@ FuzzPM is built as a modular Perl application that implements differential fuzzi
 
 **Key Methods**:
 - `new($case_packet_or_test_case, @legacy_args)` - Main entry point for fuzzing execution
-- `_validate_limited_integer($label, $value, $minimum, $maximum)` - Validates thread and mutation limits
 
 **Responsibilities**:
 1. Normalize packet or legacy runner inputs
 2. Validate thread and mutation limits
 3. Load target modules dynamically
-4. Read seed files and populate thread queue
-5. Create and manage worker threads
-6. Aggregate worker statistics
+4. Read seed files and populate the seed queue
+5. Expand seeds into executable work items, including optional mutations
+6. Create and manage worker threads
+7. Aggregate worker statistics
+
+**Supporting Modules**:
+- `Runner::Input` - Normalizes packet-mode and legacy inputs
+- `Runner::Limit` / `Runner::LimitFromEnv` - Validates configured limits
+- `Runner::Target` - Validates and loads target modules
+- `Runner::Queue` - Reads seed files into a `Thread::Queue`
+- `Runner::Mutation` - Builds mutation payloads when enabled
+- `Runner::Worker` - Executes payloads against targets
+- `Runner::Result` - Compares and prints module outputs
 
 **Threading**:
 - Uses Perl's `threads` module
-- `Thread::Queue` for thread-safe seed distribution
+- `Thread::Queue` for thread-safe work distribution
 - `threads::shared` for shared output lock
 
 **Default Configuration**:
@@ -159,119 +168,58 @@ FuzzPM is built as a modular Perl application that implements differential fuzzi
 
 ### Program Flow Diagram
 
-The following diagram illustrates the complete execution flow of FuzzPM from startup to completion:
+The following diagram illustrates the current execution flow of FuzzPM from
+startup to completion:
 
 ```mermaid
 flowchart TD
-    Start([fuzzpm.pl starts]) --> CLI[CLI::new<br/>Parse command-line arguments]
-    CLI --> CheckHelp{Help requested<br/>or no case?}
-    CheckHelp -->|Yes| ShowHelp[Display help message]
-    ShowHelp --> End1([Exit])
-    CheckHelp -->|No| CaseLoad[Case::new<br/>Load YAML test case]
-    
-    CaseLoad --> ParseYAML[Parse YAML file<br/>Validate seeds, targets, folder]
-    ParseYAML --> Runner[Runner::new<br/>Initialize fuzzing]
-    
-    Runner --> LoadModules[Load Target Modules<br/>require each module from target_folder]
-    LoadModules --> CreateQueue[Create Thread::Queue<br/>Initialize seed queue]
-    
-    CreateQueue --> ReadSeeds[Read Seed Files<br/>For each seed file]
-    ReadSeeds --> ReadLine[Read line from file<br/>One seed per line]
-    ReadLine --> Enqueue[Enqueue seed to queue]
-    Enqueue --> MoreSeeds{More lines<br/>in file?}
-    MoreSeeds -->|Yes| ReadLine
-    MoreSeeds -->|No| MoreFiles{More seed<br/>files?}
-    MoreFiles -->|Yes| ReadSeeds
-    MoreFiles -->|No| EndQueue[Mark queue as ended]
-    
-    EndQueue --> CreateThreads[Create Worker Threads<br/>Spawn N threads default: 4]
-    CreateThreads --> Thread1[Worker Thread 1]
-    CreateThreads --> Thread2[Worker Thread 2]
-    CreateThreads --> ThreadN[Worker Thread N]
-    
-    Thread1 --> WorkerLoop1[Worker Loop]
-    Thread2 --> WorkerLoop2[Worker Loop]
-    ThreadN --> WorkerLoopN[Worker Loop]
-    
-    WorkerLoop1 --> Dequeue1[Dequeue seed from queue]
-    WorkerLoop2 --> Dequeue2[Dequeue seed from queue]
-    WorkerLoopN --> DequeueN[Dequeue seed from queue]
-    
-    Dequeue1 --> CheckEmpty1{Queue<br/>empty?}
-    Dequeue2 --> CheckEmpty2{Queue<br/>empty?}
-    DequeueN --> CheckEmptyN{Queue<br/>empty?}
-    
-    CheckEmpty1 -->|Yes| ThreadExit1[Thread exits]
-    CheckEmpty2 -->|Yes| ThreadExit2[Thread exits]
-    CheckEmptyN -->|Yes| ThreadExitN[Thread exits]
-    
-    CheckEmpty1 -->|No| ProcessSeed1[Process Seed]
-    CheckEmpty2 -->|No| ProcessSeed2[Process Seed]
-    CheckEmptyN -->|No| ProcessSeedN[Process Seed]
-    
-    ProcessSeed1 --> PrintSeed1[Print seed with lock<br/>[-] Seed -> input]
-    ProcessSeed2 --> PrintSeed2[Print seed with lock<br/>[-] Seed -> input]
-    ProcessSeedN --> PrintSeedN[Print seed with lock<br/>[-] Seed -> input]
-    
-    PrintSeed1 --> ExecuteModules1[Execute Target Modules<br/>For each target module]
-    PrintSeed2 --> ExecuteModules2[Execute Target Modules<br/>For each target module]
-    PrintSeedN --> ExecuteModulesN[Execute Target Modules<br/>For each target module]
-    
-    ExecuteModules1 --> Module1_1[Module1::new seed]
-    ExecuteModules1 --> Module2_1[Module2::new seed]
-    ExecuteModules1 --> ModuleN_1[ModuleN::new seed]
-    
-    ExecuteModules2 --> Module1_2[Module1::new seed]
-    ExecuteModules2 --> Module2_2[Module2::new seed]
-    ExecuteModules2 --> ModuleN_2[ModuleN::new seed]
-    
-    ExecuteModulesN --> Module1_N[Module1::new seed]
-    ExecuteModulesN --> Module2_N[Module2::new seed]
-    ExecuteModulesN --> ModuleN_N[ModuleN::new seed]
-    
-    Module1_1 --> CollectResults1[Collect Results<br/>Store module outputs]
-    Module2_1 --> CollectResults1
-    ModuleN_1 --> CollectResults1
-    
-    Module1_2 --> CollectResults2[Collect Results<br/>Store module outputs]
-    Module2_2 --> CollectResults2
-    ModuleN_2 --> CollectResults2
-    
-    Module1_N --> CollectResultsN[Collect Results<br/>Store module outputs]
-    Module2_N --> CollectResultsN
-    ModuleN_N --> CollectResultsN
-    
-    CollectResults1 --> Compare1{Results<br/>diverge?}
-    CollectResults2 --> Compare2{Results<br/>diverge?}
-    CollectResultsN --> CompareN{Results<br/>diverge?}
-    
-    Compare1 -->|Yes| PrintDiv1[Print divergences with lock<br/>[+] Module output]
-    Compare1 -->|No| WorkerLoop1
-    Compare2 -->|Yes| PrintDiv2[Print divergences with lock<br/>[+] Module output]
-    Compare2 -->|No| WorkerLoop2
-    CompareN -->|Yes| PrintDivN[Print divergences with lock<br/>[+] Module output]
-    CompareN -->|No| WorkerLoopN
-    
-    PrintDiv1 --> WorkerLoop1
-    PrintDiv2 --> WorkerLoop2
-    PrintDivN --> WorkerLoopN
-    
-    ThreadExit1 --> JoinThreads[Main thread joins all workers]
-    ThreadExit2 --> JoinThreads
-    ThreadExitN --> JoinThreads
-    
-    JoinThreads --> Complete([Execution Complete])
-    
+    Start([fuzzpm.pl starts]) --> CLI[CLI::new<br/>parse argv into cli/options packet]
+    CLI --> NeedHelp{help requested<br/>or missing --case?}
+    NeedHelp -->|Yes| Help[print help]
+    Help --> Exit([exit 0])
+    NeedHelp -->|No| Case[Case::new<br/>read YAML from --case]
+
+    Case --> Schema[Case::Schema::new<br/>validate test schema]
+    Schema --> CasePacket[case/loaded packet<br/>case + CLI options]
+    CasePacket --> Runner[Runner::new]
+
+    Runner --> Input[Runner::Input<br/>normalize packet or legacy args]
+    Input --> Limits[LimitFromEnv + Limit<br/>resolve thread and mutation caps]
+    Limits --> Target[Runner::Target<br/>validate target folder and require modules]
+    Target --> SeedQueue[Runner::Queue<br/>read seed files into Thread::Queue]
+
+    SeedQueue --> WorkQueue[build work queue<br/>enqueue seed items]
+    WorkQueue --> Mutate{mutation enabled?}
+    Mutate -->|Yes| Mutation[Runner::Mutation<br/>create mutation items via Mutator]
+    Mutation --> QueueEnd[end work queue]
+    Mutate -->|No| QueueEnd
+
+    QueueEnd --> Spawn[spawn worker threads]
+    Spawn --> Worker[Runner::Worker<br/>dequeue work items]
+    Worker --> PrintInput[print seed or mutation<br/>with shared output lock]
+    PrintInput --> Targets[call each target module<br/>Module::new payload]
+    Targets --> Results[Runner::Result<br/>compare defined values and outputs]
+    Results --> Diverged{diverged?}
+    Diverged -->|Yes| PrintDiv[print diverged target outputs<br/>with shared output lock]
+    Diverged -->|No| Matches{--show-matches?}
+    Matches -->|Yes| PrintMatch[print matched target outputs<br/>with shared output lock]
+    Matches -->|No| MoreWork{more work?}
+    PrintDiv --> MoreWork
+    PrintMatch --> MoreWork
+    MoreWork -->|Yes| Worker
+    MoreWork -->|No| Stats[worker returns stats]
+
+    Stats --> Join[Runner joins all workers<br/>collects stats and errors]
+    Join --> Summary[print summary<br/>seeds, payloads, module calls, threads, elapsed]
+    Summary --> Complete([runner/completed packet or legacy success])
+
     style Start fill:#e1f5e1
     style Complete fill:#e1f5e1
-    style End1 fill:#ffe1e1
-    style Thread1 fill:#e1e5ff
-    style Thread2 fill:#e1e5ff
-    style ThreadN fill:#e1e5ff
-    style CreateQueue fill:#fff4e1
-    style Compare1 fill:#ffe1e1
-    style Compare2 fill:#ffe1e1
-    style CompareN fill:#ffe1e1
+    style Exit fill:#ffe1e1
+    style SeedQueue fill:#fff4e1
+    style WorkQueue fill:#fff4e1
+    style Worker fill:#e1e5ff
+    style Diverged fill:#ffe1e1
 ```
 
 ### Simplified Sequential Flow
@@ -282,59 +230,61 @@ For a high-level view of the sequential execution phases:
 sequenceDiagram
     participant User
     participant Main as fuzzpm.pl
-    participant CLI as CLI Component
-    participant Case as Case Component
+    participant CLI as Component::CLI
+    participant Case as Component::Case
+    participant Schema as Case::Schema
     participant Runner as Network::Runner
-    participant Queue as Thread::Queue
-    participant Worker1 as Worker Thread 1
-    participant Worker2 as Worker Thread 2
-    participant Module1 as Target Module 1
-    participant Module2 as Target Module 2
+    participant Input as Runner::Input
+    participant Queue as Runner::Queue
+    participant Mutation as Runner::Mutation
+    participant Worker as Runner::Worker
+    participant Result as Runner::Result
+    participant Target as Target Modules
     
     User->>Main: Execute with --case file.yml
     Main->>CLI: Parse arguments
-    CLI-->>Main: Return options hash
-    Main->>Case: Load YAML file
-    Case-->>Main: Return test case data
+    CLI-->>Main: cli/options packet
+    Main->>Case: Load YAML using CLI packet
+    Case->>Schema: Validate test section
+    Schema-->>Case: case/schema-valid packet
+    Case-->>Main: case/loaded packet
     Main->>Runner: new(case_packet)
-    
-    Runner->>Runner: Normalize and validate options
-    Runner->>Runner: Load target modules
-    Runner->>Queue: Create queue
-    Runner->>Queue: Enqueue seeds from files
-    Runner->>Queue: Mark queue ended
-    
-    Runner->>Worker1: Create thread
-    Runner->>Worker2: Create thread
+
+    Runner->>Input: Normalize packet and options
+    Input-->>Runner: runner/input packet
+    Runner->>Runner: Resolve thread and mutation limits
+    Runner->>Runner: Validate and require target modules
+    Runner->>Queue: Read seed files
+    Queue-->>Runner: seed Thread::Queue
+
+    loop each seed
+        Runner->>Runner: Enqueue seed work item
+        opt mutation enabled
+            Runner->>Mutation: Mutate seed
+            Mutation-->>Runner: mutated payload
+            Runner->>Runner: Enqueue mutation work item
+        end
+    end
+
+    Runner->>Worker: Spawn N worker threads
     
     par Parallel Processing
-        Worker1->>Queue: Dequeue seed
-        Queue-->>Worker1: Return seed
-        Worker1->>Module1: new(seed)
-        Worker1->>Module2: new(seed)
-        Module1-->>Worker1: Result 1
-        Module2-->>Worker1: Result 2
-        Worker1->>Worker1: Compare results
+        Worker->>Worker: Dequeue work item
+        Worker->>Target: Module::new(payload)
+        Target-->>Worker: Module results
+        Worker->>Result: Check divergence
+        Result-->>Worker: diverged or matched
         alt Divergence found
-            Worker1->>Main: Print divergence
-        end
-    and
-        Worker2->>Queue: Dequeue seed
-        Queue-->>Worker2: Return seed
-        Worker2->>Module1: new(seed)
-        Worker2->>Module2: new(seed)
-        Module1-->>Worker2: Result 1
-        Module2-->>Worker2: Result 2
-        Worker2->>Worker2: Compare results
-        alt Divergence found
-            Worker2->>Main: Print divergence
+            Worker->>Result: Print [+] outputs
+        else Matched and --show-matches
+            Worker->>Result: Print [=] outputs
         end
     end
     
-    Worker1-->>Runner: Thread complete
-    Worker2-->>Runner: Thread complete
-    Runner->>Runner: Join all threads
-    Runner-->>Main: Return success
+    Worker-->>Runner: Thread stats
+    Runner->>Runner: Join all workers and collect errors
+    Runner->>Main: Print summary
+    Runner-->>Main: runner/completed packet
     Main-->>User: Execution complete
 ```
 
@@ -342,45 +292,56 @@ sequenceDiagram
 
 1. **Initialization** (`fuzzpm.pl`)
    - Parse command-line arguments via `CLI::new()`
-   - Validate required options (--case)
-   - Display help if requested
+   - Display help and exit when `--help` is requested or `--case` is missing
+   - Pass the CLI packet to `Case::new()`
 
 2. **Case Loading** (`Case::new()`)
-   - Read YAML test case file
-   - Parse structure into Perl hash
-   - Return test case configuration
+   - Read the YAML test case file from the CLI packet
+   - Validate the `test` section via `Case::Schema`
+   - Return a `case/loaded` packet containing the normalized case and CLI options
 
-3. **Module Loading** (`Runner::new()`)
+3. **Runner Input Normalization** (`Runner::new()`)
+   - Accept either a `case/loaded` packet or the legacy argument form
+   - Resolve options through `Runner::Input`
+   - Apply `FUZZPM_MAX_THREADS` and `FUZZPM_MAX_MUTATIONS` caps
+
+4. **Module Loading** (`Runner::Target::new()`)
    - Iterate through target modules
    - Dynamically `require` each module from `target_folder`
    - Modules must be in format: `./target_folder/ModuleName.pm`
    - `target_folder` and module file paths must resolve inside `targets/`
 
-4. **Seed Queue Population**
+5. **Seed Queue Population** (`Runner::Queue::new()`)
    - Open each seed file
    - Read lines (one seed per line)
-   - Enqueue seeds into `Thread::Queue`
-   - Mark queue as ended
+   - Enqueue seed lines into a `Thread::Queue`
+   - Mark the seed queue as ended
 
-5. **Thread Creation**
+6. **Work Queue Expansion**
+   - Convert each seed into a seed work item
+   - When mutation is enabled, add mutation work items using `Runner::Mutation`
+   - Mark the work queue as ended before spawning workers
+
+7. **Thread Creation**
    - Create `$num_threads` worker threads
-   - Each thread receives: queue reference, target modules array
+   - Each thread receives: work queue, target modules, and `show_matches`
 
-6. **Worker Execution** (`Runner::Worker::new()`)
-   - Dequeue seeds from queue
-   - For each seed:
-     - Print seed being processed (with lock)
-     - Execute each target module with seed
-     - Collect results from all modules
-     - Compare results for divergence
-     - Print divergences if found
+8. **Worker Execution** (`Runner::Worker::new()`)
+   - Dequeue seed or mutation work items from the work queue
+   - Print each payload with the shared output lock
+   - Execute each target module with the payload
+   - Compare module outputs via `Runner::Result`
+   - Print divergences, or matched outputs when `--show-matches` is enabled
+   - Return per-thread stats
 
-7. **Thread Synchronization**
+9. **Thread Synchronization**
    - Main thread waits for all workers to complete
-   - Workers exit when queue is empty
+   - Worker errors are collected and reported
+   - Worker stats are aggregated
 
-8. **Completion**
-   - Return success status
+10. **Completion**
+   - Print a summary with seed count, payload count, module calls, thread count, and elapsed time
+   - Return a `runner/completed` packet in packet mode or `1` in legacy mode
 
 ---
 
@@ -390,9 +351,9 @@ sequenceDiagram
 
 FuzzPM uses several mechanisms to ensure thread safety:
 
-1. **Thread::Queue**: Thread-safe queue for seed distribution
-   - Workers dequeue seeds atomically
-   - No race conditions in seed access
+1. **Thread::Queue**: Thread-safe queue for work distribution
+   - Workers dequeue seed and mutation work items atomically
+   - No race conditions in payload access
 
 2. **Shared Lock**: `$OUTPUT_LOCK` (shared variable)
    - Synchronizes output printing
@@ -407,13 +368,13 @@ FuzzPM uses several mechanisms to ensure thread safety:
 ```
 Main Thread                    Worker Threads
     │                               │
-    ├─ Create Queue                 │
-    ├─ Populate Queue               │
+    ├─ Create Seed Queue            │
+    ├─ Expand Work Queue            │
     ├─ Create Threads ──────────────┼─ Start
-    │                               ├─ Dequeue Seed
+    │                               ├─ Dequeue Work Item
     ├─ Wait (join)                  ├─ Process with Targets
     │                               ├─ Compare Results
-    │                               ├─ Print Divergences
+    │                               ├─ Print Divergences/Matches
     │                               ├─ Loop until queue empty
     │                               └─ Exit
     └─ Complete
