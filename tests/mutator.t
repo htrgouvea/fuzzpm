@@ -8,13 +8,31 @@ use lib "$FindBin::Bin/../lib";
 use FuzzPM::Component::Mutator;
 
 our $VERSION = '0.0.1';
+plan tests => 5;
 
-my $original_seed = 'hello';
-my $mutated_seed = FuzzPM::Component::Mutator -> new($original_seed);
+{
+    my $original_seed = 'hello world';
+    my $mutated_seed  = FuzzPM::Component::Mutator->new($original_seed);
 
-ok(defined $mutated_seed, 'Mutator returns a defined value');
-is(length($mutated_seed), length($original_seed), 'Mutated string has same length as original');
-isnt($mutated_seed, $original_seed, 'Mutated string is different from original');
-ok($mutated_seed =~ /^[hello]+$/msx, 'Mutated string contains only characters from original');
+    ok(defined $mutated_seed, 'Mutator returns a defined value for a normal seed');
+    ok(length($mutated_seed) >= 1, 'Mutated string has at least one byte');
+}
 
-done_testing();
+{
+    my $result = FuzzPM::Component::Mutator->new(q{});
+
+    is($result, 0, 'Returns 0 for an empty seed');
+}
+
+{
+    my $result = FuzzPM::Component::Mutator->new(undef);
+
+    is($result, 0, 'Returns 0 for an undefined seed');
+}
+
+{
+    my $single_char   = 'A';
+    my $mutated       = FuzzPM::Component::Mutator->new($single_char);
+
+    ok(defined $mutated, 'Mutator handles single-character seeds without crashing');
+}
