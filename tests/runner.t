@@ -2,6 +2,8 @@
 
 use strict;
 use warnings;
+use Carp qw(croak);
+use English '-no_match_vars';
 use Test::More;
 use FindBin;
 use lib "$FindBin::Bin/../lib";
@@ -17,7 +19,7 @@ plan tests => 6;
         { module => 'ModB', result => 'foo', defined => 1 },
     ];
 
-    ok(!FuzzPM::Network::Runner::_results_diverged($results),
+    ok(!FuzzPM::Network::Runner::_results_diverged($results), ## no critic (Subroutines::ProtectPrivateSubs)
         'No divergence when all modules return the same result');
 }
 
@@ -28,7 +30,7 @@ plan tests => 6;
         { module => 'ModB', result => 'bar', defined => 1 },
     ];
 
-    ok(FuzzPM::Network::Runner::_results_diverged($results),
+    ok(FuzzPM::Network::Runner::_results_diverged($results), ## no critic (Subroutines::ProtectPrivateSubs)
         'Divergence detected when modules return different results');
 }
 
@@ -39,7 +41,7 @@ plan tests => 6;
         { module => 'ModB', result => undef, defined => 0 },
     ];
 
-    ok(FuzzPM::Network::Runner::_results_diverged($results),
+    ok(FuzzPM::Network::Runner::_results_diverged($results), ## no critic (Subroutines::ProtectPrivateSubs)
         'Divergence detected when one module returns undef and another does not');
 }
 
@@ -49,7 +51,7 @@ plan tests => 6;
         { module => 'ModA', result => 'only', defined => 1 },
     ];
 
-    ok(!FuzzPM::Network::Runner::_results_diverged($results),
+    ok(!FuzzPM::Network::Runner::_results_diverged($results), ## no critic (Subroutines::ProtectPrivateSubs)
         'Single module result is never diverged');
 }
 
@@ -60,7 +62,7 @@ plan tests => 6;
         { module => 'ModB', result => undef, defined => 0 },
     ];
 
-    ok(!FuzzPM::Network::Runner::_results_diverged($results),
+    ok(!FuzzPM::Network::Runner::_results_diverged($results), ## no critic (Subroutines::ProtectPrivateSubs)
         'No divergence when all modules return undef');
 }
 
@@ -72,12 +74,12 @@ plan tests => 6;
     ];
 
     my $output = q{};
-    open my $fh, '>', \$output or die "Cannot open string ref: $!";
+    open my $fh, '>', \$output or croak "Cannot open string ref: $OS_ERROR";
     {
         local *STDOUT = $fh;
-        FuzzPM::Network::Runner::_print_module_results('+', $results);
+        FuzzPM::Network::Runner::_print_module_results(q{+}, $results); ## no critic (Subroutines::ProtectPrivateSubs)
     }
-    close $fh or die "Cannot close string ref: $!";
+    close $fh or croak "Cannot close string ref: $OS_ERROR";
 
-    like($output, qr/\[\+\]\ ModA\thello/sx, 'Prints defined result with tag and module name');
+    like($output, qr/[[][+][]][ ]ModA\thello/msx, 'Prints defined result with tag and module name');
 }

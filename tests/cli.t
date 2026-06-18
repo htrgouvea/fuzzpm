@@ -3,7 +3,8 @@
 use strict;
 use warnings;
 use Readonly;
-Readonly my $TEST_COUNT => 7;
+Readonly my $TEST_COUNT   => 7;
+Readonly my $MUTATE_TIMES => 5;
 use Test::More;
 use FindBin;
 use lib "$FindBin::Bin/../lib";
@@ -22,11 +23,11 @@ plan tests => $TEST_COUNT;
 }
 
 {
-    local @ARGV = qw(--mutate --mutate-times 5);
+    local @ARGV = ('--mutate', '--mutate-times', $MUTATE_TIMES);
     my $cli_options = FuzzPM::Component::CLI->new();
 
-    ok($cli_options->{mutate},                'Parsed mutate flag');
-    is($cli_options->{mutate_times}, 5,       'Parsed mutate-times option');
+    ok($cli_options->{mutate},                          'Parsed mutate flag');
+    is($cli_options->{mutate_times}, $MUTATE_TIMES,     'Parsed mutate-times option');
 }
 
 {
