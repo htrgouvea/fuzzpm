@@ -4,20 +4,12 @@ package FuzzPM::Component::Mutator {
     use bytes;
     use Getopt::Long;
     use Readonly;
+    use Math::Random::Secure;
 
     our $VERSION = '0.0.4';
     Readonly my $BYTE_BITS        => 8;
     Readonly my $BYTE_RANGE       => 256;
     Readonly my $MAX_SPLICE_CHUNK => 8;
-
-    sub _secure_rand {
-        my ($max) = @_;
-        open my $fh, '<:raw', '/dev/urandom'
-            or die "Cannot open /dev/urandom: $!";
-        read $fh, my $bytes, 4;
-        close $fh;
-        return unpack('N', $bytes) % $max;
-    }
 
     sub new {
         my ($class, $seed) = @_;
@@ -37,12 +29,12 @@ package FuzzPM::Component::Mutator {
             @operations = grep { $_ ne 'byte_delete' && $_ ne 'splice' } @operations;
         }
 
-        my $operation = $operations[_secure_rand(scalar @operations)];
+        my $operation = $operations[int rand @operations];
 
         if ($operation eq 'bit_flip') {
             my @bytes = unpack 'C*', $seed;
-            my $byte_index = _secure_rand(scalar @bytes);
-            my $bit = 1 << _secure_rand($BYTE_BITS);
+            my $byte_index = int rand @bytes;
+            my $bit = 1 << int rand $BYTE_BITS;
 
             $bytes[$byte_index] ^= $bit;
 
@@ -51,17 +43,17 @@ package FuzzPM::Component::Mutator {
 
         if ($operation eq 'byte_overwrite') {
             my @bytes = unpack 'C*', $seed;
-            my $byte_index = _secure_rand(scalar @bytes);
+            my $byte_index = int rand @bytes;
 
-            $bytes[$byte_index] = _secure_rand($BYTE_RANGE);
+            $bytes[$byte_index] = int rand $BYTE_RANGE;
 
             return pack 'C*', @bytes;
         }
 
         if ($operation eq 'byte_insert') {
             my @bytes = unpack 'C*', $seed;
-            my $byte_index = _secure_rand(scalar(@bytes) + 1);
-            my $byte = _secure_rand($BYTE_RANGE);
+            my $byte_index = int rand(@bytes + 1);
+            my $byte = int rand $BYTE_RANGE;
 
             splice @bytes, $byte_index, 0, $byte;
 
@@ -75,7 +67,7 @@ package FuzzPM::Component::Mutator {
                 return $seed;
             }
 
-            my $byte_index = _secure_rand(scalar @bytes);
+            my $byte_index = int rand @bytes;
             splice @bytes, $byte_index, 1;
 
             return pack 'C*', @bytes;
@@ -93,10 +85,10 @@ package FuzzPM::Component::Mutator {
             if ($byte_count < $MAX_SPLICE_CHUNK) {
                 $max_chunk = $byte_count;
             }
-            my $chunk_length = 1 + _secure_rand($max_chunk);
-            my $start_index = _secure_rand($byte_count - $chunk_length + 1);
+            my $chunk_length = 1 + int rand $max_chunk;
+            my $start_index = int rand($byte_count - $chunk_length + 1);
             my @chunk = splice @bytes, $start_index, $chunk_length;
-            my $insert_position = _secure_rand(scalar(@bytes) + 1);
+            my $insert_position = int rand(@bytes + 1);
 
             splice @bytes, $insert_position, 0, @chunk;
 
@@ -131,9 +123,9 @@ package FuzzPM::Component::Mutator {
                 q{ },
             );
 
-            my $token = $tokens[_secure_rand(scalar @tokens)];
+            my $token = $tokens[int rand @tokens];
             my $insert_seed_length = length $seed;
-            my $insert_position = _secure_rand($insert_seed_length + 1);
+            my $insert_position = int rand($insert_seed_length + 1);
 
             my $prefix = substr $seed, 0, $insert_position;
             my $suffix = substr $seed, $insert_position;
