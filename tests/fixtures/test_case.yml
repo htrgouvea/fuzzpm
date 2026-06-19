@@ -1,0 +1,6 @@
+test:
+  seeds:
+    - seeds/test.txt
+  targets:
+    - DummyModule
+  target_folder: targets/dummy
