@@ -4,7 +4,7 @@ package FuzzPM::Component::Mutator {
     use bytes;
     use Getopt::Long;
     use Readonly;
-    use Math::Random::Secure qw(irand);
+    use Math::Random::Secure qw(rand irand);
 
     our $VERSION = '0.0.4';
     Readonly my $BYTE_BITS        => 8;
