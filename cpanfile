@@ -6,5 +6,6 @@ requires 'Math::Random::Secure', '0.080001';
 requires 'Try::Tiny', '0.32';
 
 on 'test' => sub {
-    requires 'FindBin', '1.54';
+    requires 'FindBin',    '1.54';
+    requires 'Test::More', '0';
 }

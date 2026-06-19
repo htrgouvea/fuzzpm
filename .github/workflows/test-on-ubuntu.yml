@@ -11,9 +11,6 @@ jobs:
       run: |
         sudo apt install -y perl cpanminus
         sudo cpanm --installdeps .
-    - name: Install test dependencies
-      run: |
-        sudo cpanm Test::More
     - name: Run unit tests
       run: |
         prove -lv tests/
