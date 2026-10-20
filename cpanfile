@@ -7,5 +7,5 @@ requires 'Try::Tiny', '0.32';
 
 on 'test' => sub {
     requires 'FindBin',    '1.54';
-    requires 'Test::More', '1.302225';
+    requires 'Test::More', '1.302226';
 }
